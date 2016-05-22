@@ -188,6 +188,7 @@ int CVfdSetup::showSetup()
 
 	int res = vfds->exec(NULL, "");
 
+#if !HAVE_DUCKBOX_HARDWARE
 	//NI
 	if (temp_lcd_settings_status != g_settings.lcd_setting[SNeutrinoSettings::LCD_SHOW_VOLUME])
 	{
@@ -211,6 +212,7 @@ int CVfdSetup::showSetup()
 			// CVFD::getInstance()->showPercentOver(???);
 		}
 	}
+#endif
 
 	delete vfds;
 	return res;
