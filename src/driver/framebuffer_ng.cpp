@@ -250,8 +250,21 @@ void CFrameBuffer::init(const char * const)
 }
 
 
+//NI
+void CFrameBuffer::clearIconCache()
+{
+	std::map<std::string, rawIcon>::iterator it;
+
+	for(it = icon_cache.begin(); it != icon_cache.end(); ++it) {
+		/* printf("FB: delete cached icon %s: %x\n", it->first.c_str(), (int) it->second.data); */
+		cs_free_uncached(it->second.data);
+	}
+	icon_cache.clear();
+}
+
 CFrameBuffer::~CFrameBuffer()
 {
+	clearIconCache(); //NI
 #if HAVE_SPARK_HARDWARE || HAVE_DUCKBOX_HARDWARE
 	autoBlit(false);
 #endif

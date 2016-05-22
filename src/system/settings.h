@@ -924,11 +924,11 @@ struct SNeutrinoSettings
 		ITEM_INETPLAY = 32,
 		ITEM_NETSETTINGS = 33,
 		ITEM_SWUPDATE = 34,
-		ITEM_THREE_D_MODE = 35,
 
 		ITEM_LIVESTREAM_RESOLUTION = 35,
 		ITEM_ADZAP = 36,
 		ITEM_RASS = 37,
+		ITEM_THREE_D_MODE = 38,
 
 		ITEM_MAX   // MUST be always the last in the list
 	} USER_ITEM;

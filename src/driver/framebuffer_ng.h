@@ -295,7 +295,9 @@ class CFrameBuffer : public sigc::trackable
 		void getBorder(int &sx, int &sy, int &ex, int &ey);
 		void setBorderColor(fb_pixel_t col = 0);
 		fb_pixel_t getBorderColor(void);
-
+		
+		void clearIconCache();
+		
 #if HAVE_SPARK_HARDWARE || HAVE_DUCKBOX_HARDWARE
 	private:
 		bool autoBlitStatus;
