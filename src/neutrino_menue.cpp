@@ -263,18 +263,6 @@ void CNeutrinoApp::InitMenuMain()
 	//NI }
 	}
 
-	//NI blank screen
-	mf = new CMenuForwarder(LOCALE_BLANK_SCREEN, true, NULL, this, "blank_screen", CRCInput::RC_pause);
-	mf->setHint(NEUTRINO_ICON_HINT_BLANK_SCREEN, LOCALE_MENU_HINT_BLANK_SCREEN);
-	personalize.addItem(MENU_MAIN, mf, &g_settings.personalize[SNeutrinoSettings::P_MAIN_BLANK_SCREEN], false, CPersonalizeGui::PERSONALIZE_SHOW_AS_ITEM_OPTION, NULL, DCOND_MODE_TS);
-
-	//NI-Menu section***********************************************************************************************
-	personalize.addSeparator(MENU_MAIN);
-
-	CMenuForwarder *ni_menu = new CMenuForwarder(LOCALE_NIMENU_HEAD, true, NULL, new CNIMenu(), NULL, CRCInput::RC_0, NEUTRINO_ICON_BUTTON_0);
-	ni_menu->setHint(NEUTRINO_ICON_HINT_IMAGELOGO, LOCALE_MENU_HINT_NIMENU);
-	personalize.addItem(MENU_MAIN, ni_menu, &g_settings.personalize[SNeutrinoSettings::P_MAIN_NI_MENU], false, CPersonalizeGui::PERSONALIZE_SHOW_AS_ACCESS_OPTION);
-
 	//separator
 	personalize.addSeparator(MENU_MAIN);
 
