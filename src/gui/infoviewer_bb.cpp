@@ -866,40 +866,6 @@ void CInfoViewerBB::showIcon_CA_Status(int notfirst)
 	}
 
 	if(!notfirst) {
-		FILE* fd = fopen (ecm_info_f, "r");
-		int ecm_caid = 0;
-		if (fd)
-		{
-			char *buffer = NULL;
-			size_t len = 0;
-			ssize_t read;
-			while ((read = getline(&buffer, &len, fd)) != -1)
-			{
-				if ((sscanf(buffer, "=%*[^9-0]%x", &ecm_caid) == 1) || (sscanf(buffer, "caid: %x", &ecm_caid) == 1))
-				{
-					continue;
-				}
-			}
-			fclose (fd);
-			if (buffer)
-				free (buffer);
-		}
-		if ((ecm_caid & 0xFF00) == 0x1700)
-		{
-			bool nagra_found = false;
-			bool beta_found = false;
-			for(casys_map_iterator_t it = channel->camap.begin(); it != channel->camap.end(); ++it) {
-				int caid = (*it) & 0xFF00;
-				if(caid == 0x1800)
-					nagra_found = true;
-				if (caid == 0x1700)
-					beta_found = true;
-			}
-			if(beta_found)
-				ecm_caid = 0x600;
-			else if(!beta_found && nagra_found)
-				ecm_caid = 0x1800;
-		}
 #if 0
 		static int icon_space_offset = 0;
 		if ((g_settings.infobar_casystem_display == 1) && (icon_space_offset)) {
