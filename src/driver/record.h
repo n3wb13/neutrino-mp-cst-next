@@ -135,7 +135,10 @@ class CRecordInstance
 		bool Timeshift() { return autoshift; };
 		int tshift_mode;
 		void SetStopMessage(const char* text) {rec_stop_msg = text;} ;
+//NI
+#if 0
 		int  GetStatus();
+#endif
 
 		CFrontend *	frontend;
 };
@@ -164,9 +167,12 @@ class CRecordManager : public CMenuTarget /*, public CChangeObserver*/
 		int		last_mode;
 		bool		autoshift;
 		uint32_t	shift_timer;
+//NI
+#if 0
 		uint32_t	check_timer;
 		bool		error_display;
 		bool		warn_display;
+#endif
 
 		OpenThreads::Mutex mutex;
 		static OpenThreads::Mutex sm;

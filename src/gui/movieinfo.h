@@ -57,6 +57,8 @@
 #include <stdint.h>
 #include "driver/file.h"
 
+#include <gui/imdb.h> //NI
+
 /************************************************************************/
 /************************************************************************/
 /***************** CMovieInfo ********************************/
@@ -213,6 +215,9 @@ class CMovieInfo
 		bool loadFile(CFile& file, std::string &buffer);
 		bool saveFile(const CFile& file, std::string &buffer);
 	private:// variables
+
+		//NI
+		CIMDB	*imdb;
 };
 
 #endif /*MOVIEINFO_H_*/

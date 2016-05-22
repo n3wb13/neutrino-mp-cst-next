@@ -46,7 +46,7 @@
 #include <driver/record.h>
 
 #include <zapit/femanager.h>
-#include <cs_api.h>
+//NI #include <cs_api.h>
 
 #include <sys/sysinfo.h>
 #include <sys/vfs.h>
@@ -359,11 +359,14 @@ void CDBoxInfoWidget::paint()
 		title += ": ";
 		title + cpuinfo["machine"];
 	}
+//NI
+#if 0
 	char ss[17];
 	sprintf(ss, "%016llx", cs_get_serial());
 	title += ", S/N ";
 	title += ss;
 	width = max(width, g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getRenderWidth(title, true) + 50);
+#endif
 #endif
 
 	if (!header)
@@ -452,12 +455,12 @@ void CDBoxInfoWidget::paint()
 		unsigned int h = cpuload_y1 - cpuload_y0;
 		cpuload_y0 += y;
 		cpuload_y1 += y;
-		frameBuffer->paintBoxRel(x + offsetw, cpuload_y0, pbw, h, COL_MENUCONTENT_PLUS_2);
+		frameBuffer->paintBoxRel(x + offsetw, cpuload_y0, pbw, h, COL_MENUHEAD_PLUS_0); //NI
 
 		int off = std::max(0, (int)sysload->data_avail - pbw);
 		for (unsigned int i = 0; i < sysload->data_avail - off; i++) {
 			if ((sysload->data[i + off] * h / 1000) > 0)
-				frameBuffer->paintVLine(x+offsetw + i, cpuload_y1 - sysload->data[i + off] * h / 1000, cpuload_y1, COL_MENUCONTENT_PLUS_7);
+				frameBuffer->paintVLine(x+offsetw + i, cpuload_y1 - sysload->data[i + off] * h / 1000, cpuload_y1, COL_MENUHEAD_TEXT); //NI
 		}
 	}
 

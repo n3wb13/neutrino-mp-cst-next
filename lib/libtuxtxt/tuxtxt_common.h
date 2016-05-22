@@ -707,7 +707,7 @@ void *tuxtxt_CacheThread(void * /*arg*/)
 			continue;
 
 		/* read packet */
-		ssize_t readcnt = 0;
+		ssize_t readcnt = 0; //NI
 
 #if HAVE_SPARK_HARDWARE || HAVE_DUCKBOX_HARDWARE
 		if (isTtxEplayer) {

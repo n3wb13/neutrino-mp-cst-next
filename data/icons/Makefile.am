@@ -1,3 +1,6 @@
+#NI
+SUBDIRS = screensaver
+
 installdir = $(ICONSDIR)
 
 locale = \
@@ -78,6 +81,7 @@ install_DATA += \
 	ca2.png \
 	ca2_gray.png \
 	checkmark.png \
+	clock_face.png \
 	colors.png \
 	conax_green.png \
 	conax_white.png \
@@ -111,6 +115,7 @@ install_DATA += \
 	hint_audio.png \
 	hint_back.png \
 	hint_bedit.png \
+	hint_blank_screen.png \
 	hint_ci.png \
 	hint_dboxinfo.png \
 	hint_delete.png \
@@ -118,11 +123,18 @@ install_DATA += \
 	hint_fileplay.png \
 	hint_games.png \
 	hint_hdd.png \
+	hint_hdd_info.png \
+	hint_iconsPKG0.png \
+	hint_iconsPKG1.png \
+	hint_iconsPKG2.png \
+	hint_iconsPKG3.png \
 	hint_imageinfo.png \
+	hint_imagelogo.png \
 	hint_inetradio.png \
 	hint_info.png \
 	hint_keys.png \
 	hint_language.png \
+	hint_lcd4linux.png \
 	hint_manage.png \
 	hint_mb.png \
 	hint_media.png \
@@ -153,6 +165,7 @@ install_DATA += \
 	hint_tvradio_switch.png \
 	hint_vfd.png \
 	hint_video.png \
+	hint_vtxt.png \
 	hint_ytplay.png \
 	home.png \
 	icon_blue.png \
@@ -188,14 +201,6 @@ install_DATA += \
 	mp_play_repeat_track.png \
 	mp3.jpg \
 	mp3.png \
-	mp3-0.jpg \
-	mp3-1.jpg \
-	mp3-2.jpg \
-	mp3-3.jpg \
-	mp3-4.jpg \
-	mp3-5.jpg \
-	mp3-6.jpg \
-	mp3-7.jpg \
 	multimedia.png \
 	mute.png \
 	mute_small.png \
@@ -219,6 +224,9 @@ install_DATA += \
 	powervu_green.png \
 	powervu_white.png \
 	powervu_yellow.png \
+	progressbar.png \
+	progressbar_inactive_passive.png \
+	progressbar_passive.png \
 	question.png \
 	radar.pal \
 	radar_red.pal \
@@ -268,6 +276,8 @@ install_DATA += \
 	shell.png \
 	shutdown.jpg \
 	softupdate.png \
+	stars.png \
+	stars_bg.png \
 	star-off.png \
 	star-on.png \
 	start.jpg \
@@ -287,6 +297,8 @@ install_DATA += \
 	via_yellow.png \
 	video.png \
 	volume.png \
+	volumebar.png \
+	volumebar_passive.png \
 	volumebody.png \
 	volumeslider2.png \
 	volumeslider2alpha.png \
@@ -301,3 +313,13 @@ install_DATA += \
 	x_yellow.png \
 	zap.png
 
+# NI Infoicons
+install_DATA += \
+	info0_off.png \
+	info0_on.png \
+	info1_off.png \
+	info1_on.png \
+	info2_off.png \
+	info2_on.png \
+	info3_off.png \
+	info3_on.png
