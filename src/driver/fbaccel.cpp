@@ -614,6 +614,12 @@ void CFbAccel::blit2FB(void *fbbuff, uint32_t width, uint32_t height, uint32_t x
 	dw = width - xp;
 	dh = height - yp;
 
+	//NI
+	if(unscaled_w != 0 && (int)unscaled_w < dw)
+		dw = unscaled_w;
+	if(unscaled_h != 0 && (int)unscaled_h < dh)
+		dh = unscaled_h;
+
 	size_t mem_sz = width * height * sizeof(fb_pixel_t);
 	unsigned long ulFlags = 0;
 	if (!transp) /* transp == false (default): use transparency from source alphachannel */
