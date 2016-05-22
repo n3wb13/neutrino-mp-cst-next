@@ -86,7 +86,6 @@ const struct personalize_settings_t personalize_settings[SNeutrinoSettings::P_SE
 	{"personalize_restart"			, CPersonalizeGui::PERSONALIZE_MODE_VISIBLE},
 	{"personalize_restart_tuner"		, CPersonalizeGui::PERSONALIZE_MODE_VISIBLE}, //NI
 	{"personalize_reload_plugins"		, CPersonalizeGui::PERSONALIZE_MODE_VISIBLE},
-	{"personalize_restart_tuner"		, CPersonalizeGui::PERSONALIZE_MODE_VISIBLE},
 	{"personalize_infomenu_service"		, CPersonalizeGui::PERSONALIZE_MODE_NOTVISIBLE},
 	{"personalize_softupdate"		, CPersonalizeGui::PERSONALIZE_MODE_VISIBLE},
 	
