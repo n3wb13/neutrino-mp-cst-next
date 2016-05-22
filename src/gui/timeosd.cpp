@@ -166,7 +166,7 @@ void CTimeOSD::switchMode(int position, int duration)
 			frameBuffer->blit();
 			return;
 		default:
-			InfoIcons->enableInfoIcons(true); //NI InfoIcons
+			InfoIcons->enableInfoIcons(false); //NI InfoIcons
 			m_mode = MODE_ASC;
 	}
 

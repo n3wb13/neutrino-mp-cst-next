@@ -910,6 +910,7 @@ void CInfoViewerBB::showIcon_CA_Status(int notfirst)
 				paint_ca_icons(caids[i], fta ? "fta" : dec_icon_name[decode], icon_space_offset);
 				continue;
 			}
+
 			if(g_settings.infobar_casystem_display == 0)
 				paint_ca_icons(caids[i], (found ? (dcaid ? green : yellow) : white), icon_space_offset); //NI
 			else if(found)

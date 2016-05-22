@@ -367,6 +367,7 @@ void CDBoxInfoWidget::paint()
 	title += ss;
 	width = max(width, g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getRenderWidth(title, true) + 50);
 #endif
+	x = getScreenStartX(width);
 #endif
 
 	if (!header)

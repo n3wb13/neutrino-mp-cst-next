@@ -583,7 +583,7 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	g_settings.volume_digits = configfile.getBool("volume_digits", true);
 	g_settings.volume_size = configfile.getInt32("volume_size", 26 );
 	g_settings.menu_pos = configfile.getInt32("menu_pos", CMenuWidget::MENU_POS_CENTER);
-	g_settings.show_menu_hints = configfile.getBool("show_menu_hints", false);
+	g_settings.show_menu_hints = configfile.getBool("show_menu_hints", true);
 	g_settings.infobar_show_sysfs_hdd   = configfile.getBool("infobar_show_sysfs_hdd"  , false ); //NI
 	g_settings.show_mute_icon = configfile.getInt32("show_mute_icon" ,0);
 	g_settings.infobar_show_res = configfile.getInt32("infobar_show_res", 0 );
@@ -4644,20 +4644,6 @@ int CNeutrinoApp::exec(CMenuTarget* parent, const std::string & actionKey)
 		hintBox->paint();
 
 		g_PluginList->loadPlugins();
-
-		hintBox->hide();
-		delete hintBox;
-	}
-	else if(actionKey=="restarttuner") {
-		CHintBox * hintBox = new CHintBox(LOCALE_SERVICEMENU_RESTART_TUNER,
-			g_Locale->getText(LOCALE_SERVICEMENU_RESTARTING_TUNER));
-		hintBox->paint();
-
-		g_Zapit->setStandby(true);
-		sleep(2);
-		g_Zapit->setStandby(false);
-		sleep(2);
-		g_Zapit->Rezap();
 
 		hintBox->hide();
 		delete hintBox;

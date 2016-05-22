@@ -21,7 +21,7 @@ locale_unmaintained = \
 	unmaintained/svenska.locale
 
 install_DATA  = $(locale)
-# install_DATA += $(locale_unmaintained)
+#install_DATA += $(locale_unmaintained)
 
 
 if MAINTAINER_MODE

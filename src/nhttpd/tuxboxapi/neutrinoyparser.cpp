@@ -42,6 +42,13 @@ extern CPlugins *g_PluginList;
 extern CInfoIcons *InfoIcons; /* neutrino.cpp */
 #include "gui/netfs_setup.h"
 
+//NI y-funcs
+#include "gui/plugins.h"
+extern CPlugins *g_PluginList;
+#include "gui/infoicons.h"
+extern CInfoIcons *InfoIcons; /* neutrino.cpp */
+#include "gui/netfs_setup.h"
+
 extern CBouquetManager *g_bouquetManager;
 
 //=============================================================================

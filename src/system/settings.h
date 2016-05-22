@@ -927,6 +927,7 @@ struct SNeutrinoSettings
 
 		ITEM_LIVESTREAM_RESOLUTION = 35,
 		ITEM_ADZAP = 36,
+
 		ITEM_RASS = 37,
 		ITEM_THREE_D_MODE = 38,
 

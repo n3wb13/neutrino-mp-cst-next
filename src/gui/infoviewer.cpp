@@ -2278,6 +2278,15 @@ void CInfoViewer::killTitle()
 			killRadiotext();
 		}
 		killInfobarText();
+
+		//NI show ecm.info
+		if (g_settings.show_ecm)
+			ecmInfoBox_hide();
+
+		//NI InfoIcons
+		if (!g_settings.mode_icons && g_settings.mode_icons_skin == INFOICONS_INFOVIEWER)
+			InfoIcons->hideIcons();
+
 		frameBuffer->blit();
 	}
 	showButtonBar = false;

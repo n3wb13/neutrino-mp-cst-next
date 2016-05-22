@@ -90,7 +90,7 @@ extern int allow_flash;
 #if HAVE_DUCKBOX_HARDWARE
 #define LIST_OF_UPDATES_LOCAL_FILENAME "update.list"
 #define UPDATE_LOCAL_FILENAME          "update.img"
-#define RELEASE_CYCLE                  "2.0"
+#define RELEASE_CYCLE                  "3.0"
 #define FILEBROWSER_UPDATE_FILTER      "img"
 #if BOXMODEL_UFS910 || BOXMODEL_FORTIS_HDBOX || BOXMODEL_OCTAGON1008
 #define MTD_OF_WHOLE_IMAGE              5

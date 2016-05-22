@@ -151,6 +151,8 @@ void CNeutrinoApp::InitMenuMain()
 {
 	dprintf(DEBUG_DEBUG, "init mainmenue\n");
 
+	//NI unsigned int system_rev = cs_get_revision();
+
 	// Dynamic renumbering
 	personalize.setShortcut();
 
@@ -209,6 +211,13 @@ void CNeutrinoApp::InitMenuMain()
 	mf->setHint(NEUTRINO_ICON_HINT_SCRIPTS, LOCALE_MENU_HINT_LUA);
 	personalize.addItem(MENU_MAIN, mf, &g_settings.personalize[SNeutrinoSettings::P_MAIN_LUA]);
 
+	//NI-Menu section***********************************************************************************************
+	personalize.addSeparator(MENU_MAIN);
+
+	CMenuForwarder *ni_menu = new CMenuForwarder(LOCALE_NIMENU_HEAD, true, NULL, new CNIMenu(), NULL, CRCInput::RC_0, NEUTRINO_ICON_BUTTON_0);
+	ni_menu->setHint(NEUTRINO_ICON_HINT_IMAGELOGO, LOCALE_MENU_HINT_NIMENU);
+	personalize.addItem(MENU_MAIN, ni_menu, &g_settings.personalize[SNeutrinoSettings::P_MAIN_NI_MENU], false, CPersonalizeGui::PERSONALIZE_SHOW_AS_ACCESS_OPTION);
+
 	//separator
 	personalize.addSeparator(MENU_MAIN);
 
@@ -247,9 +256,11 @@ void CNeutrinoApp::InitMenuMain()
 
 	//shutdown
 	if (g_info.hw_caps->can_shutdown) {
+	//NI if(system_rev >= 8) {
 		mf = new CMenuForwarder(LOCALE_MAINMENU_SHUTDOWN, true, NULL, this, "shutdown", CRCInput::RC_standby);
 		mf->setHint(NEUTRINO_ICON_HINT_SHUTDOWN, LOCALE_MENU_HINT_SHUTDOWN);
 		personalize.addItem(MENU_MAIN, mf, &g_settings.personalize[SNeutrinoSettings::P_MAIN_SHUTDOWN]);
+	//NI }
 	}
 
 	//NI blank screen

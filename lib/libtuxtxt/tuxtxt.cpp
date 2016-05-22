@@ -190,9 +190,6 @@ static int toptext_getnext(int startpage, int up, int findgroup)
 	nextgrp = nextblk = 0;
 	current = startpage;
 
-	if (startpage == 0)
-		return 0;
-
 	//NI
 	if (startpage == 0)
 		return 0;
