@@ -162,7 +162,7 @@ public:
 
 	CUserMenu usermenu;
 
-	void ExitRun(const bool write_si = true, int retcode = 0); //NI cross-team settings
+	//void ExitRun(const bool write_si = true, int retcode = 0); //NI cross-team settings
 	void saveSetup(const char * fname);
 	int loadSetup(const char * fname);
 	void upgradeSetup(const char * fname);
