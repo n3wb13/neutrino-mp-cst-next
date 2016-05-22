@@ -89,6 +89,7 @@ class CInfoViewerBB
 		//NI
 		enum CAM_DECODE_NUM {UNKNOWN, NA, FTA, LOCAL, CARD, REMOTE};
 		void 		paint_cam_icons();
+		void*		Thread_paint_cam_icons(void);
 		unsigned short int decode;
 		int		DecEndx;
 		int 		parse_ecmInfo(const char * file);
