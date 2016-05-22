@@ -227,7 +227,7 @@ void CImageInfoNI::paint()
 	ypos = y;
 
 	head_string = g_Locale->getText(LOCALE_IMAGEINFO_HEAD);
-	CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8, head_string);
+	//CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8, head_string);
 
 	//background
 	frameBuffer->paintBoxRel(0, 0, max_width, max_height, COL_INFOBAR_PLUS_0);
