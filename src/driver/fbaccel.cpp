@@ -579,7 +579,7 @@ void CFbAccel::paintLine(int xa, int ya, int xb, int yb, const fb_pixel_t col)
 }
 
 #if !HAVE_TRIPLEDRAGON
-void CFbAccel::blit2FB(void *fbbuff, uint32_t width, uint32_t height, uint32_t xoff, uint32_t yoff, uint32_t xp, uint32_t yp, bool transp)
+void CFbAccel::blit2FB(void *fbbuff, uint32_t width, uint32_t height, uint32_t xoff, uint32_t yoff, uint32_t xp, uint32_t yp, bool transp, uint32_t unscaled_w, uint32_t unscaled_h)
 {
 #if !HAVE_SPARK_HARDWARE && !HAVE_DUCKBOX_HARDWARE
 	int  xc, yc;
