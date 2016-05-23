@@ -162,7 +162,9 @@ public:
 
 	CUserMenu usermenu;
 
-	//void ExitRun(const bool write_si = true, int retcode = 0); //NI cross-team settings
+#if !HAVE_SPARK_HARDWARE && !HAVE_DUCKBOX_HARDWARE
+	void ExitRun(const bool write_si = true, int retcode = 0); //NI cross-team settings
+#endif
 	void saveSetup(const char * fname);
 	int loadSetup(const char * fname);
 	void upgradeSetup(const char * fname);
