@@ -121,11 +121,12 @@ int CSettingsManager::exec(CMenuTarget* parent, const std::string &actionKey)
 		if(ret == 0 /*&& s.f_type != 0x72b6L*/) /*jffs2*/
 		{
 				//NI
+				const char backup_sh[] = "/bin/backup.sh";
 				CHintBox * hintBox = new CHintBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_SETTINGS_BACKUP));
 				hintBox->paint();
-				std::string fname = (std::string)"/bin/backup.sh " + fileBrowser.getSelectedFile()->Name;
+				std::string fname = (std::string)backup_sh + " " + g_settings.image_settings_backup_path;
 				printf("backup: executing [%s]\n", fname.c_str());
-				my_system(2, "/bin/backup.sh", fileBrowser.getSelectedFile()->Name.c_str());
+				my_system(2, backup_sh, g_settings.image_settings_backup_path.c_str());
 				hintBox->hide();
 				delete hintBox;
 //NI
