@@ -368,7 +368,7 @@ bool CNITouchFileNotifier::changeNotify(const neutrino_locale_t, void * data)
 			if (my_system(3, "service", filename, "stop") != 0)
 				printf("[ni_menu.cpp] executing %s failed\n", buf.str().c_str());
 		}
-	remove(flag.c_str());
+		remove(flag.c_str());
 	}
 	return menu_return::RETURN_REPAINT;
 }
@@ -536,6 +536,12 @@ int CNIMenu::show()
 		CNITouchFileNotifier * lcd_clock_aFileNotifier = new CNITouchFileNotifier("lcd-clock_a");
 		mc = new CMenuOptionChooser(LOCALE_LCD4L_CLOCK_A, &flag_lcd4l_clock_a, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true, lcd_clock_aFileNotifier, CRCInput::convertDigitToKey(lcd4l_shortcut++));
 		mc->setHint(NEUTRINO_ICON_HINT_LCD4L, LOCALE_MENU_HINT_LCD4L_CLOCK_A);
+		lcd4lMenu->addItem(mc);
+
+		lcd4lMenu->addItem(GenericMenuSeparator);
+
+		mc = new CMenuOptionChooser(LOCALE_LCD4L_CONVERT, &g_settings.lcd4l_convert, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true, NULL, CRCInput::convertDigitToKey(lcd4l_shortcut++));
+		mc->setHint(NEUTRINO_ICON_HINT_LCD4L, LOCALE_MENU_HINT_LCD4L_CONVERT);
 		lcd4lMenu->addItem(mc);
 
 	mf = new CMenuForwarder(LOCALE_LCD4L_SUPPORT, true, NULL, lcd4lMenu, "", CRCInput::convertDigitToKey(shortcut++));

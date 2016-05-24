@@ -7,6 +7,8 @@
 	Copyright (C) 2012-2016 'vanhofen'
 	Homepage: http://www.neutrino-images.de/
 
+	Modded    (C) 2016 'TangoCash'
+
 	License: GPL
 
 	This program is free software; you can redistribute it and/or modify
@@ -33,6 +35,7 @@
 #include <sstream>
 #include <stdio.h>
 #include <unistd.h>
+#include <iomanip>
 
 #include <global.h>
 #include <neutrino.h>
@@ -87,6 +90,10 @@ extern CRemoteControl *g_RemoteControl;
 #define START			LCD_DATADIR "start"
 #define END			LCD_DATADIR "end"
 
+#define FONT			LCD_DATADIR "font"
+#define FGCOLOR			LCD_DATADIR "fgcolor"
+#define BGCOLOR			LCD_DATADIR "bgcolor"
+
 #define FLAG_LCD4LINUX		"/tmp/.lcd4linux"
 #define PIDFILE			"/tmp/lcd4linux.pid"
 
@@ -138,7 +145,7 @@ void CLCD4l::StopLCD4l()
 void CLCD4l::SwitchLCD4l()
 {
 	if (thrLCD4l)
-		StopLCD4l(); 
+		StopLCD4l();
 	else
 		StartLCD4l();
 }
@@ -166,7 +173,8 @@ int CLCD4l::RemoveFile(const char *file)
 
 	int ret = 0;
 
-	if (access(file, F_OK) == 0) {
+	if (access(file, F_OK) == 0)
+	{
 		if (unlink(file) != 0)
 			ret = 1;
 	}
@@ -199,8 +207,10 @@ void CLCD4l::Init()
 
 	m_Event		= "n/a";
 	m_Progress	= -1;
-	for (int i = 0; i < (int)sizeof(m_Duration); i++) 
+	for (int i = 0; i < (int)sizeof(m_Duration); i++)
 		m_Duration[i] = ' ';
+	m_Start		= "00:00";
+	m_End		= "00:00";
 
 	if (!access(LCD_DATADIR, F_OK) == 0)
 		mkdir(LCD_DATADIR, 0755);
@@ -260,11 +270,49 @@ void* CLCD4l::LCD4lProc(void* arg)
 
 void CLCD4l::ParseInfo(uint64_t parseID, bool newID, bool firstRun)
 {
+	SNeutrinoTheme &t = g_settings.theme;
+
+	std::string font = g_settings.font_file;
+
+	if (m_font.compare(font))
+	{
+		WriteFile(FONT, font);
+		m_font = font;
+	}
+
+	/* ----------------------------------------------------------------- */
+
+	std::string fgcolor	= hexStr(&t.infobar_Text_red)
+				+ hexStr(&t.infobar_Text_green)
+				+ hexStr(&t.infobar_Text_blue)
+				+ hexStr(&t.infobar_Text_alpha);
+
+	if (m_fgcolor.compare(fgcolor))
+	{
+		WriteFile(FGCOLOR, fgcolor);
+		m_fgcolor = fgcolor;
+	}
+
+	/* ----------------------------------------------------------------- */
+
+	std::string bgcolor	= hexStr(&t.infobar_red)
+				+ hexStr(&t.infobar_green)
+				+ hexStr(&t.infobar_blue)
+				+ hexStr(&t.infobar_alpha);
+
+	if (m_bgcolor.compare(bgcolor))
+	{
+		WriteFile(BGCOLOR, bgcolor);
+		m_bgcolor = bgcolor;
+	}
+
+	/* ----------------------------------------------------------------- */
+
 	int Tuner = 1 + CFEManager::getInstance()->getLiveFE()->getNumber();
 
 	if (m_Tuner != Tuner)
 	{
-		WriteFile(TUNER, Int2String(Tuner));
+		WriteFile(TUNER, to_string(Tuner));
 		m_Tuner = Tuner;
 	}
 
@@ -274,7 +322,7 @@ void CLCD4l::ParseInfo(uint64_t parseID, bool newID, bool firstRun)
 
 	if (m_Volume != Volume)
 	{
-		WriteFile(VOLUME, Int2String(Volume));
+		WriteFile(VOLUME, to_string(Volume));
 		m_Volume = Volume;
 	}
 
@@ -432,7 +480,10 @@ void CLCD4l::ParseInfo(uint64_t parseID, bool newID, bool firstRun)
 		{
 			if (ModeTshift)
 				Service = g_Locale->getText(LOCALE_RECORDINGMENU_TIMESHIFT);
-			else
+			else if (CMoviePlayerGui::getInstance().p_movie_info)
+				Service = CMoviePlayerGui::getInstance().p_movie_info->epgChannel;
+
+			if (Service.empty())
 				Service = g_Locale->getText(LOCALE_MOVIEPLAYER_HEAD);
 
 			switch (CMoviePlayerGui::getInstance().getState())
@@ -456,7 +507,6 @@ void CLCD4l::ParseInfo(uint64_t parseID, bool newID, bool firstRun)
 					}
 					else /* show play-icon */
 						Logo = ICONSDIR "/" NEUTRINO_ICON_PLAY ICONSEXT;
-
 					break;
 				default: /* show movieplayer-icon */
 					Logo = ICONSDIR "/" NEUTRINO_ICON_MOVIEPLAYER ICONSEXT;
@@ -478,7 +528,7 @@ void CLCD4l::ParseInfo(uint64_t parseID, bool newID, bool firstRun)
 
 		if (m_ChannelNr != ChannelNr)
 		{
-			WriteFile(CHANNELNR, Int2String(ChannelNr));
+			WriteFile(CHANNELNR, to_string(ChannelNr));
 			m_ChannelNr = ChannelNr;
 		}
 
@@ -493,7 +543,7 @@ void CLCD4l::ParseInfo(uint64_t parseID, bool newID, bool firstRun)
 
 		if (m_ModeLogo != ModeLogo)
 		{
-			WriteFile(MODE_LOGO, Int2String(ModeLogo));
+			WriteFile(MODE_LOGO, to_string(ModeLogo));
 			m_ModeLogo = ModeLogo;
 		}
 
@@ -564,7 +614,6 @@ void CLCD4l::ParseInfo(uint64_t parseID, bool newID, bool firstRun)
 	std::string Event = "";
 	int Progress = 0;
 	char Duration[sizeof(m_Duration)] = {0};
-
 	char Start[6] = {0};
 	char End[6] = {0};
 
@@ -646,46 +695,55 @@ void CLCD4l::ParseInfo(uint64_t parseID, bool newID, bool firstRun)
 	//}
 	else if (parseID == MODE_TS)
 	{
-		if (!ModeTshift)
-			Progress = CMoviePlayerGui::getInstance().file_prozent;
+		if (!CMoviePlayerGui::getInstance().pretty_name.empty())
+			Event = CMoviePlayerGui::getInstance().pretty_name;
+		else if (CMoviePlayerGui::getInstance().p_movie_info)
+			Event = CMoviePlayerGui::getInstance().p_movie_info->epgTitle;
 
-		if (CMoviePlayerGui::getInstance().p_movie_info)
-		{
-			Event = CMoviePlayerGui::getInstance().p_movie_info->epgTitle.c_str();
-
-			if (!ModeTshift)
-			{
-				int total = CMoviePlayerGui::getInstance().p_movie_info->length * (60 * 1000);
-				int done = total * Progress / 100;
-			
-				snprintf(Duration, sizeof(Duration), "%d/%d", done / (60 * 1000), total / (60 * 1000));
-			}
-		}
-		else if (!CMoviePlayerGui::getInstance().file_name.empty())
-		{
-			Event = CMoviePlayerGui::getInstance().file_name;
-			// TODO: Duration, Start, End
-		}
-		else
+		if (Event.empty())
 			Event = "MOVIE";
 
+		if (!ModeTshift)
+		{
+			int total = CMoviePlayerGui::getInstance().GetDuration();
+			int done = CMoviePlayerGui::getInstance().GetPosition();
+			snprintf(Duration, sizeof(Duration), "%d/%d", done / (60 * 1000), total / (60 * 1000));
+			Progress = CMoviePlayerGui::getInstance().file_prozent;
+		}
+
 		time_t sTime = time(NULL);
+		sTime -= (CMoviePlayerGui::getInstance().GetPosition()/1000);
 		tm_struct = localtime(&sTime);
 
 		snprintf(Start, sizeof(Start), "%02d:%02d", tm_struct->tm_hour, tm_struct->tm_min);
+
+		time_t eTime = time(NULL);
+		eTime +=(CMoviePlayerGui::getInstance().GetDuration()/1000) - (CMoviePlayerGui::getInstance().GetPosition()/1000);
+		tm_struct = localtime(&eTime);
+
+		snprintf(End, sizeof(End), "%02d:%02d", tm_struct->tm_hour, tm_struct->tm_min);
 	}
 
 	/* ----------------------------------------------------------------- */
 
 	Event += "\n"; // make sure we have at least two lines in event-file
+
 	if (m_Event.compare(Event))
 	{
-		WriteFile(EVENT, Event, true);
+		WriteFile(EVENT, Event, g_settings.lcd4l_convert);
 		m_Event = Event;
+	}
 
+	if (m_Start.compare(Start))
+	{
 		WriteFile(START, (std::string)Start);
+		m_Start = (std::string)Start;
+	}
 
+	if (m_End.compare(End))
+	{
 		WriteFile(END, (std::string)End);
+		m_End = (std::string)End;
 	}
 
 	if (Progress > 100)
@@ -693,7 +751,7 @@ void CLCD4l::ParseInfo(uint64_t parseID, bool newID, bool firstRun)
 
 	if (m_Progress != Progress)
 	{
-		WriteFile(PROGRESS, Int2String(Progress));
+		WriteFile(PROGRESS, to_string(Progress));
 		m_Progress = Progress;
 	}
 	
@@ -710,7 +768,7 @@ bool CLCD4l::WriteFile(const char *file, std::string content, bool convert)
 {
 	bool ret = true;
 
-	if (convert)
+	if (convert) // align to internal lcd4linux font
 	{
 		strReplace(content, "Ã¤", "á");
 		strReplace(content, "Ã¶", "ï");
@@ -735,13 +793,6 @@ bool CLCD4l::WriteFile(const char *file, std::string content, bool convert)
 	}
 
 	return ret;
-}
-
-string CLCD4l::Int2String(int iConvert)
-{
-	std::stringstream strConvert;
-	strConvert << iConvert;
-	return strConvert.str();
 }
 
 uint64_t CLCD4l::GetParseID()
@@ -794,13 +845,22 @@ void CLCD4l::strReplace(std::string & orig, const char *fstr, const std::string 
 	}
 }
 
+std::string CLCD4l::hexStr(unsigned char* data)
+{
+	std::stringstream ss;
+	ss << std::hex;
+	for(int i=0; i<1; ++i)
+		ss << std::setw(2) << std::setfill('0') << (int)data[i];
+	return ss.str();
+}
+
 bool CLCD4l::GetLogoName(uint64_t channel_id, std::string channel_name, std::string &logo)
 {
 	int h, i, j;
 	char str_channel_id[16];
 	char *upper_name, *lower_name, *p;
 
-	upper_name = strdup(channel_name.c_str()); 
+	upper_name = strdup(channel_name.c_str());
 	for (p = upper_name; *p != '\0'; p++)
 		*p = (char) toupper(*p);
 
@@ -816,7 +876,7 @@ bool CLCD4l::GetLogoName(uint64_t channel_id, std::string channel_name, std::str
 	// first png, then jpg, then gif
 	std::string strLogoExt[3] = { ".png", ".jpg", ".gif" };
 
-	//printf("[CLCD4l] %s: ID: %s, Name: %s (u: %s, l: %s)\n", __FUNCTION__, str_channel_id, channel_name.c_str(), upper_name, lower_name);	
+	//printf("[CLCD4l] %s: ID: %s, Name: %s (u: %s, l: %s)\n", __FUNCTION__, str_channel_id, channel_name.c_str(), upper_name, lower_name);
 
 	for (h = 0; h < 4; h++)
 	{
