@@ -827,16 +827,15 @@ _show_menu:
 
 	//NI
 	hddmenu->addItem(new CMenuSeparator());
-	if (cs_get_revision() < 8) {
-		//NI HDD power (HD1/BSE only)
-		int flag_hddpower = file_exists(FLAG_DIR ".hddpower");
+	//NI HDD power (HD1/BSE only)
+	int flag_hddpower = file_exists(FLAG_DIR ".hddpower");
 
-		CNITouchFileNotifier * hddpowerNotifier = new CNITouchFileNotifier("hddpower");
-		mc = new CMenuOptionChooser(LOCALE_HDD_POWER, &flag_hddpower, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true, hddpowerNotifier, CRCInput::RC_yellow);
-		mc->setHint(NEUTRINO_ICON_HINT_IMAGELOGO, LOCALE_MENU_HINT_HDD_POWER);
-		hddmenu->addItem(mc);
-		hddmenu->addItem(new CMenuSeparator());
-	}
+	CNITouchFileNotifier * hddpowerNotifier = new CNITouchFileNotifier("hddpower");
+	mc = new CMenuOptionChooser(LOCALE_HDD_POWER, &flag_hddpower, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true, hddpowerNotifier, CRCInput::RC_yellow);
+	mc->setHint(NEUTRINO_ICON_HINT_IMAGELOGO, LOCALE_MENU_HINT_HDD_POWER);
+	hddmenu->addItem(mc);
+	hddmenu->addItem(new CMenuSeparator());
+
 	mc = new CMenuOptionChooser(LOCALE_HDD_FORMAT_ON_MOUNT_FAILED, &g_settings.hdd_format_on_mount_failed, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true);
 	mc->setHint("", LOCALE_MENU_HINT_HDD_FORMAT_ON_MOUNT_FAILED);
 	hddmenu->addItem(mc);
