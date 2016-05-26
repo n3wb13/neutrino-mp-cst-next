@@ -156,6 +156,7 @@ int CImageInfoNI::exec(CMenuTarget* parent, const std::string &)
 
 	while (1)
 	{
+		frameBuffer->blit();
 		neutrino_msg_data_t data;
 		uint64_t timeoutEnd = CRCInput::calcTimeoutEnd_MS(100);
 		g_RCInput->getMsgAbsoluteTimeout( &msg, &data, &timeoutEnd );
@@ -189,6 +190,7 @@ int CImageInfoNI::exec(CMenuTarget* parent, const std::string &)
 
 	StopInfoThread();
 	hide();
+	frameBuffer->blit();
 
 	return res;
 }
@@ -197,6 +199,7 @@ void CImageInfoNI::hide()
 {
 	frameBuffer->paintBackground();
 	videoDecoder->Pig(-1, -1, -1, -1);
+	frameBuffer->blit();
 }
 
 void CImageInfoNI::paint_pig(int px, int py, int w, int h)
