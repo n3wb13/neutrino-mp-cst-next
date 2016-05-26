@@ -826,6 +826,7 @@ _show_menu:
 
 	//NI
 	hddmenu->addItem(new CMenuSeparator());
+#if !HAVE_SPARK_HARDWARE && !HAVE_DUCKBOX_HARDWARE
 	if (cs_get_revision() < 8) {
 		//NI HDD power (HD1/BSE only)
 		const char *flag_hddpower = FLAGDIR "/.hddpower";
@@ -836,6 +837,7 @@ _show_menu:
 		hddmenu->addItem(mc);
 		hddmenu->addItem(new CMenuSeparator());
 	}
+#endif
 	mc = new CMenuOptionChooser(LOCALE_HDD_FORMAT_ON_MOUNT_FAILED, &g_settings.hdd_format_on_mount_failed, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true);
 	mc->setHint("", LOCALE_MENU_HINT_HDD_FORMAT_ON_MOUNT_FAILED);
 	hddmenu->addItem(mc);
