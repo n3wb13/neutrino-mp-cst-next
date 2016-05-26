@@ -454,9 +454,11 @@ void CHDDInfoWidget::paint(const std::string &Key)
 	buf.str("");
 	buf <<  temperature;
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(xpos, ypos, datwidth, (!strcmp(temperature, "") ? g_Locale->getText(LOCALE_HDD_INFO_UNKNOWN) : buf.str().c_str()), COL_MENUCONTENT_TEXT);
+	frameBuffer->blit();
 }
 
 void CHDDInfoWidget::hide()
 {
 	frameBuffer->paintBackgroundBoxRel(x, y, width, height);
+	frameBuffer->blit();
 }

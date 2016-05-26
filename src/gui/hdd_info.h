@@ -33,10 +33,10 @@
 class CHDDInfoWidget
 {
 	private:
-		CFrameBuffer	*frameBuffer;
 		int x, y, width, height;
 
 	public:
+		CFrameBuffer *frameBuffer;
 		CHDDInfoWidget();
 		~CHDDInfoWidget();
 		void hide();
