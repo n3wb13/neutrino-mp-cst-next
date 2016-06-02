@@ -314,6 +314,7 @@ ci.ignore_msg CA Meldungen ignorieren
 ci.init_failed CAM-Init fehlgeschlagen
 ci.init_ok CAM-Init beendet
 ci.inserted CAM im Slot
+ci.rec_zapto Umschalten bei Aufnahmen mit CAM
 ci.removed CAM entfernt -> Slot
 ci.reset Reset
 ci.reset_standby Reset nach Standby
@@ -2319,10 +2320,10 @@ rclock.locked Gesperrt
 rclock.lockmsg Die Fernbedienung wird gesperrt.\nUm die Sperre aufzuheben, bitte\n[rot] gefolgt von [%s]\nauf der Fernbedienung drücken.
 rclock.title Fernbedienung sperren
 rclock.unlockmsg Fernbedienung reaktiviert
-recording.end Aufnahmeende festlegen
-recording.end_text Soll die Aufnahme zum Ende der aktuellen Sendung stoppen?
 recording.already_found %s\nwurde bereits gefunden. Trotzdem aufnehmen?
 recording.already_found_check Prüfe Aufnahmen
+recording.end Aufnahmeende festlegen
+recording.end_text Soll die Aufnahme zum Ende der aktuellen Sendung stoppen?
 recording.fill_text Das Aufnahmemedium ist zu %d%% gefüllt. Trotzdem aufnehmen?
 recording.is_running Folgende Aufnahme läuft bereits! Neue Aufnahme starten?
 recording.start Starte Aufnahme, bitte warten...!
