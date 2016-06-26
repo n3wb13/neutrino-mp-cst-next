@@ -598,14 +598,21 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	g_settings.audio_AnalogMode = configfile.getInt32( "audio_AnalogMode", 0 );
 	g_settings.audio_DolbyDigital    = configfile.getBool("audio_DolbyDigital"   , true); //NI
 
-	g_settings.auto_lang = configfile.getInt32( "auto_lang", 0 );
+	g_settings.auto_lang = configfile.getInt32( "auto_lang", 1 ); //NI
 	g_settings.auto_subs = configfile.getInt32( "auto_subs", 0 );
 
 	for(int i = 0; i < 3; i++) {
+		//NI
+		std::string _lang = "none";
+		switch (i) {
+			case 0: _lang = "German" ; break;
+			case 1: _lang = "English"; break;
+			case 2: _lang = "French" ; break;
+		}
 		sprintf(cfg_key, "pref_lang_%d", i);
-		g_settings.pref_lang[i] = configfile.getString(cfg_key, "none");
+		g_settings.pref_lang[i] = configfile.getString(cfg_key, _lang); //NI
 		sprintf(cfg_key, "pref_subs_%d", i);
-		g_settings.pref_subs[i] = configfile.getString(cfg_key, "none");
+		g_settings.pref_subs[i] = configfile.getString(cfg_key, _lang); //NI
 	}
 	g_settings.subs_charset = configfile.getString("subs_charset", "CP1252");
 	g_settings.zap_cycle = configfile.getInt32( "zap_cycle", 0 );
@@ -848,8 +855,8 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	g_settings.channellist_show_numbers = configfile.getInt32("channellist_show_numbers", 1);
 
 	//screen configuration
-	g_settings.screen_xres = configfile.getInt32("screen_xres", 112); //NI
-	g_settings.screen_yres = configfile.getInt32("screen_yres", 112); //NI
+	g_settings.screen_xres = configfile.getInt32("screen_xres", 105); //NI
+	g_settings.screen_yres = configfile.getInt32("screen_yres", 105); //NI
 	g_settings.screen_StartX_crt = configfile.getInt32( "screen_StartX_crt", DEFAULT_X_START_SD);
 	g_settings.screen_StartY_crt = configfile.getInt32( "screen_StartY_crt", DEFAULT_Y_START_SD );
 	g_settings.screen_EndX_crt = configfile.getInt32( "screen_EndX_crt", DEFAULT_X_END_SD);
@@ -1114,6 +1121,14 @@ void CNeutrinoApp::upgradeSetup(const char * fname)
 			g_settings.usermenu[SNeutrinoSettings::BUTTON_YELLOW]->items = "7,35"; //NI
 			configfile.setString("usermenu_tv_yellow", g_settings.usermenu[SNeutrinoSettings::BUTTON_YELLOW]->items);
 		}
+	}
+	else if (g_settings.version_pseudo < "20160623110000")
+	{
+		if (g_settings.screen_xres == 112)
+			g_settings.screen_xres = 105;
+
+		if (g_settings.screen_yres == 112)
+			g_settings.screen_yres = 105;
 	}
 
 	g_settings.version_pseudo = NEUTRINO_VERSION_PSEUDO;
