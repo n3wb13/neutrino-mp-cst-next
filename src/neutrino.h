@@ -119,9 +119,6 @@ private:
 	void standbyMode( bool bOnOff, bool fromDeepStandby = false );
 	void getAnnounceEpgName(CTimerd::RecordingInfo * eventinfo, std::string &name);
 
-#if !HAVE_SPARK_HARDWARE && !HAVE_DUCKBOX_HARDWARE
-	//NI void ExitRun(const bool write_si = true, int retcode = 0);
-#endif
 	void RealRun();
 	void InitZapper();
 	void InitTimerdClient();
@@ -162,9 +159,6 @@ public:
 
 	CUserMenu usermenu;
 
-#if !HAVE_SPARK_HARDWARE && !HAVE_DUCKBOX_HARDWARE
-	void ExitRun(const bool write_si = true, int retcode = 0); //NI cross-team settings
-#endif
 	void saveSetup(const char * fname);
 	int loadSetup(const char * fname);
 	void upgradeSetup(const char * fname);
@@ -244,6 +238,8 @@ public:
 		REBOOT
 	};
 	void ExitRun(const bool write_si = true, int retcode = SHUTDOWN);
+#else
+	void ExitRun(const bool write_si = true, int retcode = 0); //NI cross-team settings
 #endif
 	bool wakeupFromStandby(void);
 	void standbyToStandby(void);
