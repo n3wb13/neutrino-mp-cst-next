@@ -308,6 +308,7 @@ channellist.show_empty_favs Show empty favorites bouquets
 channellist.show_infobox Show bottom infobox
 channellist.since since
 channellist.start starts
+ci.check_live_slot Check CI-slot for live-tv use
 ci.clock CI clock (Mhz)
 ci.empty No CAM in slot
 ci.ignore_msg Ignore CA messages
@@ -602,6 +603,7 @@ extra.volume_pos Volumebar
 extra.volume_size Height of display
 extra.west West
 extra.zap_cycle Zap cycle
+extra.zapit_fe_no_same Different tuners when same transponder
 extra.zapit_fe_retries Tune retries
 extra.zapit_fe_timeout Tune timeout
 extra.zapit_hvoltage 18V for rotor moving 
@@ -1537,6 +1539,7 @@ menu.hint_scan_fastupdate Enable/disable fast scan auto-update
 menu.hint_scan_fec Select transponder FEC
 menu.hint_scan_felink Select tuner to link tuner to
 menu.hint_scan_femode Select tuner connection type
+menu.hint_scan_fenosame For two same CI+ units:\nUse same tuner only at the same service-id
 menu.hint_scan_feretries Number of retries on tuning failure
 menu.hint_scan_fesetup Configure tuner(s)
 menu.hint_scan_fetimeout Time to wait for signal, in 1/10 of second
