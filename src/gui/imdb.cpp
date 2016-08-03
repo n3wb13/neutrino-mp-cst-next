@@ -49,15 +49,15 @@ CIMDB::CIMDB()
 	surl		= "http://www.google.de/search?q=";
 	soutfile	= "/tmp/google.out";
 	IMDburl		= "http://www.omdbapi.com/?plot=full&r=json&i=";
-	IMDbAPI		= "/tmp/IMDb.json";
-	posterfile	= "/tmp/poster.jpg";
+	IMDbAPI		= "/tmp/imdb.json";
+	posterfile	= "/tmp/imdb.jpg";
 	stars_bg	= ICONSDIR "/stars_bg.png";
 	stars		= ICONSDIR "/stars.png";
 
 	cc_win		= NULL;
 	cc_txt		= NULL;
 
-	imdb_activ	= false;
+	imdb_active	= false;
 
 	//initFrame(); /*not use for epginfo
 }
@@ -66,7 +66,7 @@ CIMDB::~CIMDB()
 {
 	cleanup();
 
-	imdb_activ = false;
+	imdb_active = false;
 	if(cc_win)
 		delete cc_win;
 }
@@ -316,9 +316,9 @@ int CIMDB::getIMDb(const std::string& epgTitle)
 			if(httpTool.downloadFile(m["Poster"], posterfile.c_str()))
 				return 2;
 			else {
-				return 1;
 				if (access(posterfile.c_str(), F_OK) == 0)
 					unlink(posterfile.c_str());
+				return 1;
 			}
 		}
 		ret=2;
@@ -329,8 +329,10 @@ int CIMDB::getIMDb(const std::string& epgTitle)
 
 void CIMDB::getIMDbData(std::string& txt)
 {
-	txt += "Metascore: "+m["Metascore"]+"/100\n";
+	//TODO: localize
 	txt += "Stimmen: "+m["imdbVotes"]+"\n";
+	txt += "Metascore: "+m["Metascore"]+(m["Metascore"] == "N/A" ? "\n" : "/100\n");
+	txt += "Original-Titel: "+m["Title"]+"\n";
 	txt += "Datum: "+m["Released"]+" | "+m["Country"]+" | "+m["Runtime"]+"\n";
 	txt += "Genre: "+m["Genre"]+"\n";
 	txt += "Awards: "+m["Awards"]+"\n";
@@ -416,7 +418,7 @@ void CIMDB::cleanup()
 		unlink(soutfile.c_str());
 	if (access(posterfile.c_str(), F_OK) == 0)
 		unlink(posterfile.c_str());
-	imdb_activ = false;
+	imdb_active = false;
 }
 
 void CIMDB::initFrame()
@@ -520,7 +522,7 @@ void CIMDB::showTextWindow(const std::string title, const std::string txt)
 void CIMDB::hideWindow(bool keep_active)
 {
 	if (!keep_active)
-		imdb_activ = false;
+		imdb_active = false;
 
 	cc_win->kill();
 
@@ -572,7 +574,7 @@ void CIMDB::showIMDbWindow(const std::string title)
 	int w_starbar		= 160; //starbar picture width
 	int h_starbar		= fontheight;
 	std::string pg_value	= "0";
-	imdb_activ		= true;
+	imdb_active		= true;
 
 	//show splash
 	cc_win->setWindowCaption("IMDb: Daten werden geladen ...");

@@ -1952,14 +1952,17 @@ bool CMovieBrowser::onButtonPressMainFrame(neutrino_msg_t msg)
 	{
 		if (m_movieSelectionHandler != NULL) {
 			std::string fname = getScreenshotName(m_movieSelectionHandler->file.Name, S_ISDIR(m_movieSelectionHandler->file.Mode));
-			if (!fname.empty()){
+			if (!fname.empty())
+			{
 				//delete Cover
-				if (ShowMsg(LOCALE_MESSAGEBOX_INFO, LOCALE_MOVIEBROWSER_DELETE_SCREENSHOT, CMessageBox::mbrNo, CMessageBox:: mbYes | CMessageBox::mbNo) == CMessageBox::mbrYes) {
-						unlink(fname.c_str());
+				if (ShowMsg(LOCALE_MESSAGEBOX_INFO, LOCALE_MOVIEBROWSER_DELETE_SCREENSHOT, CMessageBox::mbrNo, CMessageBox:: mbYes | CMessageBox::mbNo) == CMessageBox::mbrYes)
+				{
+					unlink(fname.c_str());
 					refresh();
 				}
-#if 0
-			}else if (g_settings.tmdb_api_key != "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"){
+			}
+			else if (g_settings.tmdb_api_key != "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+			{
 				//add TMDB Cover
 				fname = m_movieSelectionHandler->file.Name.c_str();
 				int ext_pos = 0;
@@ -1979,7 +1982,6 @@ bool CMovieBrowser::onButtonPressMainFrame(neutrino_msg_t msg)
 					if (tmdb)
 						delete tmdb;
 				}
-#endif
 			}
 		}
 	}
@@ -2049,11 +2051,9 @@ bool CMovieBrowser::onButtonPressMainFrame(neutrino_msg_t msg)
 	{
 		if (m_movieSelectionHandler != NULL)
 		{
-#if 0
 			if (m_settings.gui == MB_GUI_MOVIE_INFO &&  m_windowFocus == MB_FOCUS_MOVIE_INFO)
 				g_EpgData->show_mp(m_movieSelectionHandler,0,0);
 			else
-#endif
 				m_movieInfo.showMovieInfo(*m_movieSelectionHandler);
 			refresh();
 		}

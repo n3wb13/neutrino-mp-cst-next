@@ -433,6 +433,7 @@ CTimerd::TimerList CTimerdClient::getOverlappingTimers(time_t& startTime, time_t
 	}
 	return overlapping;
 }
+
 //-------------------------------------------------------------------------
 
 bool CTimerdClient::shutdown()
