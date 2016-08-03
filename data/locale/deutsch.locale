@@ -2328,6 +2328,7 @@ recording.already_found %s\nwurde bereits gefunden. Trotzdem aufnehmen?
 recording.already_found_check Prüfe Aufnahmen
 recording.end Aufnahmeende festlegen
 recording.end_text Soll die Aufnahme zum Ende der aktuellen Sendung stoppen?
+recording.failed Aufzeichnung ist fehlgeschlagen!
 recording.fill_text Das Aufnahmemedium ist zu %d%% gefüllt. Trotzdem aufnehmen?
 recording.is_running Folgende Aufnahme läuft bereits! Neue Aufnahme starten?
 recording.start Starte Aufnahme, bitte warten...!
