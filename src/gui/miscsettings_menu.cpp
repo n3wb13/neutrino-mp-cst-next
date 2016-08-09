@@ -144,6 +144,7 @@ int CMiscMenue::exec(CMenuTarget* parent, const std::string &actionKey)
 		const char *action_str = "filebrowserdir";
 		chooserDir(g_settings.network_nfs_moviedir, true, action_str);
 		return menu_return::RETURN_REPAINT;
+	}
 	else if(actionKey == "onlineservices")
 	{
 		return showMiscSettingsMenuOnlineServices();
