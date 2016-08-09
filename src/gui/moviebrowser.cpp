@@ -1961,7 +1961,7 @@ bool CMovieBrowser::onButtonPressMainFrame(neutrino_msg_t msg)
 					refresh();
 				}
 			}
-			else if (g_settings.tmdb_api_key != "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+			else if (g_settings.tmdb_enabled)
 			{
 				//add TMDB Cover
 				fname = m_movieSelectionHandler->file.Name.c_str();
@@ -2051,6 +2051,7 @@ bool CMovieBrowser::onButtonPressMainFrame(neutrino_msg_t msg)
 	{
 		if (m_movieSelectionHandler != NULL)
 		{
+			framebuffer->paintBackground(); //NI
 			if (m_settings.gui == MB_GUI_MOVIE_INFO &&  m_windowFocus == MB_FOCUS_MOVIE_INFO)
 				g_EpgData->show_mp(m_movieSelectionHandler,0,0);
 			else
