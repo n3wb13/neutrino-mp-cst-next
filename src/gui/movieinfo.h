@@ -185,8 +185,6 @@ class CMovieInfo
 		bool saveFile(const CFile &file, std::string &buffer);
 	private:// variables
 
-		//NI
-		CIMDB	*imdb;
 };
 
 #endif /*MOVIEINFO_H_*/
