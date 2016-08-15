@@ -66,7 +66,7 @@
 extern CRemoteControl *g_RemoteControl;	/* neutrino.cpp */
 extern cVideo * videoDecoder;
 
-#define COL_INFOBAR_BUTTONS_BACKGROUND (COL_INFOBAR_SHADOW_PLUS_1)
+#define COL_INFOBAR_BUTTONS_BACKGROUND (COL_MENUFOOT_PLUS_0)
 
 CInfoViewerBB::CInfoViewerBB()
 {
@@ -1105,7 +1105,8 @@ void* CInfoViewerBB::Thread_paint_cam_icons(void)
 int CInfoViewerBB::check_ecmInfo()
 {
 	int caid = 0;
-	if (File_copy("/tmp/ecm.info", "/tmp/ecm.info.tmp")) {
+	CFileHelpers fh;
+	if (fh.copyFile("/tmp/ecm.info", "/tmp/ecm.info.tmp")) {
 		g_InfoViewer->md5_ecmInfo = filehash((char *)"/tmp/ecm.info.tmp");
 		caid = parse_ecmInfo("/tmp/ecm.info.tmp");
 	}

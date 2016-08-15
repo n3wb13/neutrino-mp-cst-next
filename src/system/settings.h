@@ -96,6 +96,11 @@ struct SNeutrinoTheme
 	unsigned char menu_Content_inactive_Text_green;
 	unsigned char menu_Content_inactive_Text_blue;
 
+	unsigned char menu_Foot_alpha;
+	unsigned char menu_Foot_red;
+	unsigned char menu_Foot_green;
+	unsigned char menu_Foot_blue;
+
 	int menu_Hint_gradient;
 	int menu_Hint_gradient_direction;
 	int menu_ButtonBar_gradient;
@@ -978,13 +983,13 @@ typedef struct time_settings_t
 const time_settings_struct_t timing_setting[SNeutrinoSettings::TIMING_SETTING_COUNT] =
 {
 	{ 180,	LOCALE_TIMING_MENU        }, //NI
-	{ 60,	LOCALE_TIMING_CHANLIST    },
-	{ 60,	LOCALE_TIMING_EPG         }, //NI
+	{ 180,	LOCALE_TIMING_CHANLIST    }, //NI
+	{ 180,	LOCALE_TIMING_EPG         }, //NI
 	{ 6,	LOCALE_TIMING_INFOBAR     },
- 	{ 60,	LOCALE_TIMING_INFOBAR_RADIO }, //NI
+ 	{ 0,	LOCALE_TIMING_INFOBAR_RADIO },
  	{ 6,	LOCALE_TIMING_INFOBAR_MOVIEPLAYER},
  	{ 3,	LOCALE_TIMING_VOLUMEBAR   },
-	{ 60,	LOCALE_TIMING_FILEBROWSER },
+	{ 180,	LOCALE_TIMING_FILEBROWSER }, //NI
 	{ 3,	LOCALE_TIMING_NUMERICZAP  }
 };
 

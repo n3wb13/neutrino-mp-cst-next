@@ -46,6 +46,7 @@
 #include <linux/hdreg.h>
 #include <linux/fs.h>
 #include "debug.h"
+#include <global.h>
 #include <system/helpers.h>
 #include <gui/update_ext.h>
 #include <driver/framebuffer.h>
@@ -100,7 +101,7 @@ void  wakeup_hdd(const char *hdd_dir, bool msg)
 		msg = false;
 	if(msg)
 		loadBox.paint();
-	std::string s = get_path("/bin/wakeup.sh");
+	std::string s = check_var("/bin/wakeup.sh");
 	my_system(2,s.c_str(),hdd_dir);
 
 	if (!g_settings.hdd_wakeup) {
@@ -571,6 +572,28 @@ std::string trim(std::string &str, const std::string &trimChars /*= " \n\r\t"*/)
 	return result.erase(0, result.find_first_not_of(trimChars));
 }
 
+std::string cutString(const std::string str, int msgFont, const int width)
+{
+	Font *msgFont_ = g_Font[msgFont];
+	std::string ret = str;
+	ret = trim(ret);
+	int sw = msgFont_->getRenderWidth(ret);
+	if (sw <= width)
+		return ret;
+	else {
+		std::string z = "...";
+		int zw = msgFont_->getRenderWidth(z);
+		if (width <= 2*zw)
+			return ret;
+		do {
+			ret = ret.substr(0, ret.length()-1);
+			sw = msgFont_->getRenderWidth(ret);
+		} while (sw+zw > width);
+		ret = trim(ret) + z;
+	}
+	return ret;
+}
+
 std::string strftime(const char *format, const struct tm *tm)
 {
 	char buf[4096];
@@ -620,6 +643,8 @@ std::string& htmlEntityDecode(std::string& text)
 	};
 	decode_table dt[] =
 	{
+		{"\n", "&#x0a;"},
+		{"\n", "&#x0d;"},
 		{" ",  "&nbsp;"},
 		{"&",  "&amp;"},
 		{"<",  "&lt;"},
@@ -1115,44 +1140,7 @@ std::string Lang2ISO639_1(std::string& lang)
 }
 
 //NI
-bool File_copy(std::string rstr, std::string wstr)
-{
-	char * buffer;
-	long size;
-
-	std::ifstream infile(rstr.c_str(), std::ifstream::binary);
-	if (infile)
-	{
-		std::ofstream outfile(wstr.c_str(), std::ofstream::binary);
-		if (outfile)
-		{
-			// get size of file
-			infile.seekg(0,std::ifstream::end);
-			size=infile.tellg();
-			infile.seekg(0);
-
-			buffer = new char [size];
-			infile.read (buffer,size);
-
-			outfile.write (buffer,size);
-
-			delete[] buffer;
-			outfile.close();
-		}
-		else
-		{
-			return false;
-		}
-		infile.close();
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-}
-
-// rreturns the pid of the first process found in /proc
+// returns the pid of the first process found in /proc
 int getpidof(const char *process)
 {
 	DIR *dp;
@@ -1244,16 +1232,16 @@ std::string filehash(const char *file)
 	return os.str();
 }
 
-std::string get_path(const char *path)
+std::string check_var(const char *file)
 {
-	if(path[0] == '/' && strstr(path,"/var") == 0)
+	std::string var = "/var";
+	if(file[0] == '/' && strstr(file, var.c_str()) == 0)
 	{
-		std::string varc = "/var";
-		varc += path;
+		std::string varfile = var + file;
 
-		if(file_exists(varc.c_str()))
-			return varc;
+		if (file_exists(varfile))
+			return varfile;
 	}
 
-	return path;
+	return file;
 }

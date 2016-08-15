@@ -69,6 +69,7 @@ std::string getFileName(std::string &file);
 std::string getFileExt(std::string &file);
 std::string getNowTimeStr(const char* format);
 std::string trim(std::string &str, const std::string &trimChars = " \n\r\t");
+std::string cutString(const std::string str, int msgFont, const int width);
 std::string strftime(const char *format, const struct tm *tm);
 std::string strftime(const char *format, time_t when, bool gm = false);
 time_t toEpoch(std::string &date);
@@ -88,7 +89,7 @@ class CFileHelpers
 		static CFileHelpers* getInstance();
 		bool doCopyFlag;
 
-		bool copyFile(const char *Src, const char *Dst, mode_t mode);
+		bool copyFile(const char *Src, const char *Dst, mode_t mode = 644); //NI
 		bool copyDir(const char *Src, const char *Dst, bool backupMode=false);
 		static bool createDir(std::string& Dir, mode_t mode = 755);
 		static bool createDir(const char *Dir, mode_t mode = 755){std::string dir = std::string(Dir);return createDir(dir, mode);}
@@ -122,10 +123,9 @@ std::string getJFFS2MountPoint(int mtdPos);
 std::string Lang2ISO639_1(std::string& lang);
 
 //NI
-bool	File_copy(std::string rstr, std::string wstr);
-int	getpidof(const char *process);
-std::string	filehash(const char * file);
-std::string	get_path(const char * path);
+int getpidof(const char *process);
+std::string filehash(const char * file);
+std::string check_var(const char * file);
 inline bool file_exists(const std::string file) { return file_exists(file.c_str()); }
 
 #endif
