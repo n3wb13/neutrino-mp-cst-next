@@ -133,6 +133,7 @@ CInfoViewer::CInfoViewer ()
 	lasttime = 0;
 	aspectRatio = 0;
 	ChanInfoX = 0;
+	analogclock_buf = NULL; //NI
 	Init();
 	infoViewerBB->Init();
 	oldinfo.current_uniqueKey = 0;
@@ -180,6 +181,12 @@ void CInfoViewer::Init()
 
 	_livestreamInfo1.clear();
 	_livestreamInfo2.clear();
+
+	//NI
+	if (analogclock_buf) {
+		delete analogclock_buf;
+		analogclock_buf = NULL;
+	}
 }
 
 /*
@@ -2531,11 +2538,17 @@ void CInfoViewer::showAnalogClock(int posx,int posy,int dia)
 	hx = int((dia * 0.6 * cos(hAngleInRad)));
 	hy = int((dia * 0.6 * sin(hAngleInRad)));
 
-	std::string clock_face = ICONSDIR_VAR "/clock_face.png";
-	if (access(clock_face.c_str(), F_OK) != 0)
-		clock_face = ICONSDIR "/clock_face.png";
+	if (analogclock_buf == NULL) {
+		std::string clock_face = ICONSDIR_VAR "/clock_face.png";
+		if (access(clock_face.c_str(), F_OK) != 0)
+			clock_face = ICONSDIR "/clock_face.png";
+		g_PicViewer->DisplayImage(clock_face, posx-dia, posy-dia, 2*dia, 2*dia);
 
-	g_PicViewer->DisplayImage(clock_face, posx-dia, posy-dia, 2*dia, 2*dia);
+		analogclock_buf = new fb_pixel_t[2*dia * 2*dia];
+		frameBuffer->SaveScreen(posx-dia, posy-dia, 2*dia, 2*dia, analogclock_buf);
+	}
+	else
+		frameBuffer->RestoreScreen(posx-dia, posy-dia, 2*dia, 2*dia, analogclock_buf);
 
 	frameBuffer->paintLine(posx,posy,posx+hx,posy+hy,COL_MENUHEAD_TEXT);
 	frameBuffer->paintLine(posx,posy,posx+mx,posy+my,COL_MENUHEAD_TEXT);
@@ -2606,6 +2619,12 @@ void CInfoViewer::ResetModules(bool kill)
 	delete rec;
 	rec = NULL;
 	infoViewerBB->ResetModules();
+
+	//NI
+	if (analogclock_buf) {
+		delete analogclock_buf;
+		analogclock_buf = NULL;
+	}
 }
 
 //NI
