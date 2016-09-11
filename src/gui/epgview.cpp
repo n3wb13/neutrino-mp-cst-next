@@ -568,7 +568,7 @@ int CEpgData::show_mp(MI_MOVIE_INFO *mi, int mp_position, int mp_duration, bool 
 	epgData.itemDescriptions.clear();
 	epgData.items.clear();
 	epgData.fsk = mp_movie_info->parentalLockAge;
-	epgData.table_id = mp_movie_info->epgEpgId;
+	epgData.table_id = mp_movie_info->epgId;
 #ifdef FULL_CONTENT_CLASSIFICATION
 	epgData.contentClassification.clear();
 #else
@@ -592,12 +592,12 @@ int CEpgData::show_mp(MI_MOVIE_INFO *mi, int mp_position, int mp_duration, bool 
 		extMovieInfo += mp_movie_info->serieName;
 		extMovieInfo += "\n";
 	}
-	if (!mp_movie_info->epgChannel.empty())
+	if (!mp_movie_info->channelName.empty())
 	{
 		extMovieInfo += "\n";
 		extMovieInfo += g_Locale->getText(LOCALE_MOVIEBROWSER_INFO_CHANNEL);
 		extMovieInfo += ": ";
-		extMovieInfo += mp_movie_info->epgChannel;
+		extMovieInfo += mp_movie_info->channelName;
 		extMovieInfo += "\n";
 	}
 	if (mp_movie_info->rating != 0)
@@ -634,7 +634,7 @@ int CEpgData::show_mp(MI_MOVIE_INFO *mi, int mp_position, int mp_duration, bool 
 		{
 			if (i)
 				extMovieInfo += ", ";
-			extMovieInfo += mp_movie_info->audioPids[i].epgAudioPidName;
+			extMovieInfo += mp_movie_info->audioPids[i].AudioPidName;
 		}
 		extMovieInfo += "\n";
 	}
@@ -696,7 +696,7 @@ int CEpgData::show_mp(MI_MOVIE_INFO *mi, int mp_position, int mp_duration, bool 
 		epg_done = 100;
 	//printf("[%s:%d] epg_done: %d\n", __func__, __LINE__, epg_done);
 
-	res = show(mp_movie_info->epgEpgId >> 16, 0, 0, doLoop, false, true);
+	res = show(mp_movie_info->epgId >> 16, 0, 0, doLoop, false, true);
 	if(!epgTextSwitch.empty())
 	{
 		mp_movie_info->epgInfo2 = epgTextSwitch;
@@ -1271,7 +1271,7 @@ int CEpgData::show(const t_channel_id channel_id, uint64_t a_id, time_t* a_start
 						picname = imdb->getFilename(channel, epgData.eventID);
 
 					CFileHelpers fh;
-					if (!fh.copyFile(imdb->posterfile.c_str(), picname.c_str(), 644))
+					if (!fh.copyFile(imdb->posterfile.c_str(), picname.c_str(), 0644))
 						perror( "IMDb: error copy file" );
 
 					sleep(2);
@@ -1363,7 +1363,7 @@ int CEpgData::show(const t_channel_id channel_id, uint64_t a_id, time_t* a_start
 				}
 				g_settings.bigFonts = bigFonts;
 				if (mp_info)
-					show(mp_movie_info->epgEpgId >> 16, 0, 0, false, false, true);
+					show(mp_movie_info->epgId >> 16, 0, 0, false, false, true);
 				else
 					show(channel_id, id, &startzeit, false, call_fromfollowlist);
 				showPos=0;
@@ -1381,14 +1381,6 @@ int CEpgData::show(const t_channel_id channel_id, uint64_t a_id, time_t* a_start
 				} else
 					loop = false;
 				break;
-			case CRCInput::RC_favorites:
-			case CRCInput::RC_sat:
-			case CRCInput::RC_www:
-				if( !call_fromfollowlist){
-					g_RCInput->postMsg (msg, 0);
-					loop = false;
-				}
-				break;
 			default:
 				if (msg == (neutrino_msg_t)g_settings.key_channelList_cancel) {
 					if(fader.StartFadeOut()) {
@@ -1396,7 +1388,14 @@ int CEpgData::show(const t_channel_id channel_id, uint64_t a_id, time_t* a_start
 						msg = 0;
 					} else
 						loop = false;
-				} else if (msg == NeutrinoMessages::EVT_SERVICESCHANGED || msg == NeutrinoMessages::EVT_BOUQUETSCHANGED) {
+				}
+				else if (CNeutrinoApp::getInstance()->listModeKey(msg)) {
+					if (!call_fromfollowlist) {
+						g_RCInput->postMsg (msg, 0);
+						loop = false;
+					}
+				}
+				else if (msg == NeutrinoMessages::EVT_SERVICESCHANGED || msg == NeutrinoMessages::EVT_BOUQUETSCHANGED) {
 					g_RCInput->postMsg(msg, data);
 					loop = false;
 					res = menu_return::RETURN_EXIT_ALL;
