@@ -1952,7 +1952,6 @@ void CMoviePlayerGui::PlayFileLoop(void)
 			showFileInfos();
 		} else if (CNeutrinoApp::getInstance()->listModeKey(msg)) {
 			// do nothing
->>>>>>> c872560ae132d0936ad489e2be16b0e20d60fb6b
 		} else if (msg == (neutrino_msg_t) CRCInput::RC_setup) {
 			CNeutrinoApp::getInstance()->handleMsg(NeutrinoMessages::SHOW_MAINMENU, 0);
 		} else if (msg == CRCInput::RC_red || msg == CRCInput::RC_green || msg == CRCInput::RC_yellow || msg == CRCInput::RC_blue ) {
@@ -2091,7 +2090,7 @@ void CMoviePlayerGui::callInfoViewer(bool init_vzap_it)
 				continue;
 			}
 		}
-		if (!movie_info.epgChannel.empty() || !movie_info.epgTitle.empty())
+		if (!movie_info.channelName.empty() || !movie_info.epgTitle.empty())
 			p_movie_info = &movie_info;
 #ifdef ENABLE_GRAPHLCD
 		if (p_movie_info)
