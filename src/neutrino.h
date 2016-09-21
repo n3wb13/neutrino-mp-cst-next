@@ -252,6 +252,8 @@ public:
 	sigc::signal<bool> OnBeforeRestart;
 	sigc::signal<void> OnAfterSetupFonts;
 	void channelRezap();
+
+	void g_settings_video_Mode(int value) { g_settings.video_Mode = value; }
 };
 #endif
 
