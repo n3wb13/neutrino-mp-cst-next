@@ -34,7 +34,7 @@
 #include <driver/fontrenderer.h>
 #include <driver/rcinput.h>
 #include <driver/screen_max.h>
-#include <driver/vfd.h>
+#include <driver/display.h>
 
 #include <sys/utsname.h>
 
@@ -209,7 +209,7 @@ void CImageInfoNI::paint_pig(int px, int py, int w, int h)
 	g_PicViewer->DisplayImage(ICONSDIR "/start.jpg", px, py, w, h, frameBuffer->TM_NONE);
 }
 
-void CImageInfoNI::paintLine(int xpos, int font, const char* text)
+void CImageInfoNI::paintLine(int xpos, int font, std::string text)
 {
 	g_Font[font]->RenderString(xpos, ypos, max_text_width, text, COL_INFOBAR_TEXT);
 }
@@ -224,9 +224,6 @@ void CImageInfoNI::paint()
 {
 	const char * head_string;
 	int  xpos = x+10;
-
-	std::ostringstream imageversion;
-	std::ostringstream commits;
 
 	ypos = y;
 
@@ -244,52 +241,56 @@ void CImageInfoNI::paint()
 	CConfigFile config('\t');
 	config.loadConfig("/.version");
 
-	const char * imagename = config.getString("imagename", "NI-Neutrino-HD").c_str();
-	const char * homepage  = config.getString("homepage",  "www.neutrino-images.de").c_str();
-	const char * creator   = config.getString("creator",   "NI-Team").c_str();
-	const char * version   = config.getString("version",   "no version").c_str();
-	const char * origin_commit = config.getString("origin-commit", "no commit").c_str();
-	const char * builddate = config.getString("builddate", "no builddate").c_str();
+	std::string imagename	= config.getString("imagename", "NI-Neutrino-HD");
+	std::string homepage	= config.getString("homepage",  "www.neutrino-images.de");
+	std::string creator	= config.getString("creator",   "NI-Team");
+	std::string version	= config.getString("version",   "n/a");
+	std::string commit	= config.getString("commit",    "n/a");
+	std::string builddate	= config.getString("builddate", "n/a");
 
-	static CFlashVersionInfo versionInfo(version);
-	const char * releaseCycle = versionInfo.getReleaseCycle();
-	
-	struct utsname uts_info;
+	std::ostringstream imageversion;
+	imageversion.str("n/a");
 
-	imageversion << releaseCycle << " (" << versionInfo.getType() << ")";
-	commits << "NI: " << origin_commit;
+	if (version.compare("n/a") != 0)
+	{
+		static CFlashVersionInfo versionInfo(version);
+		std::string releaseCycle = versionInfo.getReleaseCycle();
+		imageversion.str("");
+		imageversion << releaseCycle << " (" << versionInfo.getType() << ")";
+	}
 
 	ypos += iheight;
-	paintLine(xpos    , font_info, g_Locale->getText(LOCALE_IMAGEINFO_IMAGE));
+	paintLine(xpos, font_info, g_Locale->getText(LOCALE_IMAGEINFO_IMAGE));
 	paintLine(xpos+offset, font_info, imagename);
 
 	ypos += iheight;
-	paintLine(xpos    , font_info, g_Locale->getText(LOCALE_IMAGEINFO_VERSION));
-	paintLine(xpos+offset, font_info, imageversion.str().c_str());
+	paintLine(xpos, font_info, g_Locale->getText(LOCALE_IMAGEINFO_VERSION));
+	paintLine(xpos+offset, font_info, imageversion.str());
 
 	ypos += iheight;
-	paintLine(xpos    , font_info, "Commit:");
-	paintLine(xpos+offset, font_info, commits.str().c_str());
+	paintLine(xpos, font_info, "Commit:");
+	paintLine(xpos+offset, font_info, commit);
+
+	struct utsname uts_info;
 
 	ypos += iheight;
-	paintLine(xpos    , font_info, "Kernel:");
+	paintLine(xpos, font_info, "Kernel:");
 	paintLine(xpos+offset, font_info, uname(&uts_info) < 0 ? "n/a" : uts_info.release);
 
 	ypos += iheight;
 
-	paintLine(xpos    , font_info, g_Locale->getText(LOCALE_IMAGEINFO_DATE));
+	paintLine(xpos, font_info, g_Locale->getText(LOCALE_IMAGEINFO_DATE));
 	paintLine(xpos+offset, font_info, builddate );
 	
 	ypos += iheight;
-	paintLine(xpos    , font_info, g_Locale->getText(LOCALE_IMAGEINFO_CREATOR));
+	paintLine(xpos, font_info, g_Locale->getText(LOCALE_IMAGEINFO_CREATOR));
 	paintLine(xpos+offset, font_info, creator);
 
 	ypos += iheight;
-	paintLine(xpos    , font_info, g_Locale->getText(LOCALE_IMAGEINFO_HOMEPAGE));
+	paintLine(xpos, font_info, g_Locale->getText(LOCALE_IMAGEINFO_HOMEPAGE));
 	paintLine(xpos+offset, font_info, homepage);
 
 	ypos += iheight;
-
 	ypos += sheight;
 
 	get_MTD_Info();
@@ -569,7 +570,7 @@ void CImageInfoNI::paint_DF_Info(int posx)
 	get_DF_Info();
 
 	buf << "Imagesize (" << image_size.percent << " Percent):";
-	paintLine(posx, font_small, buf.str().c_str());
+	paintLine(posx, font_small, buf.str());
 
 	CProgressBar pb(boxX, boxY, boxW, boxH);
 	pb.setFrameThickness(0);
@@ -598,7 +599,7 @@ void CImageInfoNI::paint_DF_Info(int posx)
 	}
 
 	ypos+= sheight;
-	paintLine(posx, font_small, buf.str().c_str());
+	paintLine(posx, font_small, buf.str());
 
 	buf.str("");
 	if (image_size.available > 1024)
@@ -607,7 +608,7 @@ void CImageInfoNI::paint_DF_Info(int posx)
 		buf << "Free: " << image_size.available << " KB";
 
 	ypos += sheight;
-	paintLine(posx, font_small, buf.str().c_str());
+	paintLine(posx, font_small, buf.str());
 }
 
 int CImageInfoNI::get_MEM_Info()

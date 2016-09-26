@@ -1755,7 +1755,8 @@ void CInfoViewer::showSNR ()
 			sigbox->setColorBody(numbox->getColorBody());
 			sigbox->doPaintBg(false);
 			sigbox->enableTboxSaveScreen(numbox->getColBodyGradientMode());
-		}
+		}else
+			sigbox->setFrontEnd(CFEManager::getInstance()->getLiveFE());
 		sigbox->paint(CC_SAVE_SCREEN_NO);
 	}
 	if(showButtonBar)
