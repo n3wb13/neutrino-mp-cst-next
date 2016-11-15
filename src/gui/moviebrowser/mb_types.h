@@ -31,18 +31,16 @@
 		based on code of Steffen Hehn 'McClean'
 
 	(C) 2009-2014 Stefan Seyfried
+	(C) 2016      Sven Hoefer
 
 	outsourced:
 	(C) 2016, Thilo Graf 'dbt'
 */
 
-
 #include <gui/widget/menue.h>
 
 #ifndef __MB_TYPES__
 #define __MB_TYPES__
-
-
 
 /* !!!! Do NOT change the order of the enum, just add items at the end !!!! */
 typedef enum
@@ -68,9 +66,9 @@ typedef enum
 	MB_INFO_LENGTH 			= 18,
 	MB_INFO_SIZE 			= 19,
 	MB_INFO_RATING			= 20,
-	MB_INFO_MAX_NUMBER		= 21 	// MUST be allways the last item in the list
+	MB_INFO_SPACER			= 21,
+	MB_INFO_MAX_NUMBER		= 22 	// MUST be allways the last item in the list
 }MB_INFO_ITEM;
-
 
 typedef enum
 {
@@ -106,9 +104,10 @@ typedef enum
 	MB_FOCUS_BROWSER = 0,
 	MB_FOCUS_LAST_PLAY = 1,
 	MB_FOCUS_LAST_RECORD = 2,
-	MB_FOCUS_MOVIE_INFO = 3,
-	MB_FOCUS_FILTER = 4,
-	MB_FOCUS_MAX_NUMBER = 5	// MUST be allways the last item in the list
+	MB_FOCUS_MOVIE_INFO1 = 3,
+	MB_FOCUS_MOVIE_INFO2 = 4,
+	MB_FOCUS_FILTER = 5,
+	MB_FOCUS_MAX_NUMBER = 6	// MUST be allways the last item in the list
 }MB_FOCUS;
 
 typedef enum
@@ -120,7 +119,6 @@ typedef enum
 	MB_GUI_FILTER = 4,
 	MB_GUI_MAX_NUMBER = 5	// MUST be allways the last item in the list
 }MB_GUI;
-
 
 typedef enum
 {

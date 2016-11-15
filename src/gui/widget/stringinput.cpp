@@ -150,6 +150,8 @@ void CStringInput::init()
 	y = getScreenStartY(height);
 	selected = 0;
 	smstimer = 0;
+	force_saveScreen = false;
+	pixBuf = NULL;
 }
 
 void CStringInput::NormalKeyPressed(const neutrino_msg_t key)
@@ -377,6 +379,15 @@ std::string &CStringInput::getValue(void)
 	return *valueString;
 }
 
+void CStringInput::forceSaveScreen(bool enable)
+{
+	force_saveScreen = enable;
+	if (!enable && pixBuf) {
+		delete[] pixBuf;
+		pixBuf = NULL;
+	}
+}
+
 int CStringInput::exec( CMenuTarget* parent, const std::string & )
 {
 	neutrino_msg_t      msg;
@@ -392,11 +403,12 @@ int CStringInput::exec( CMenuTarget* parent, const std::string & )
 	if (size > (int) valueString->length())
 		valueString->append(size - valueString->length(), ' ');
 
-	fb_pixel_t * pixbuf = NULL;
-	if (!parent) {
-		pixbuf = new fb_pixel_t[(width + OFFSET_SHADOW) * (height + OFFSET_SHADOW)];
-		if (pixbuf)
-			frameBuffer->SaveScreen(x, y, width + OFFSET_SHADOW, height + OFFSET_SHADOW, pixbuf);
+	if (pixBuf)
+		delete[] pixBuf;
+	if (!parent || force_saveScreen) {
+		pixBuf = new fb_pixel_t[(width + OFFSET_SHADOW) * (height + OFFSET_SHADOW)];
+		if (pixBuf)
+			frameBuffer->SaveScreen(x, y, width + OFFSET_SHADOW, height + OFFSET_SHADOW, pixBuf);
 	}
 
 	paint();
@@ -517,10 +529,11 @@ int CStringInput::exec( CMenuTarget* parent, const std::string & )
 		}
 	}
 
-	if (pixbuf)
+	if (pixBuf)
 	{
-		frameBuffer->RestoreScreen(x, y, width + OFFSET_SHADOW, height + OFFSET_SHADOW, pixbuf);
-		delete[] pixbuf;//Mismatching allocation and deallocation: pixbuf
+		frameBuffer->RestoreScreen(x, y, width + OFFSET_SHADOW, height + OFFSET_SHADOW, pixBuf);
+		delete[] pixBuf;
+		pixBuf = NULL;
 		frameBuffer->blit();
 	} else
 		hide();
@@ -601,19 +614,10 @@ void CStringInput::paintChar(int pos, const char c)
 	fb_pixel_t color;
 	fb_pixel_t bgcolor;
 
-	if (pos == selected)
-	{
-		color   = COL_MENUCONTENTSELECTED_TEXT;
-		bgcolor = COL_MENUCONTENTSELECTED_PLUS_0;
-	}
-	else
-	{
-		color   = COL_MENUCONTENT_TEXT;
-		bgcolor = COL_MENUCONTENT_PLUS_0;
-	}
+	getItemColors(color, bgcolor, pos == selected);
 
-	frameBuffer->paintBoxRel(xpos, ypos, input_w, input_h, COL_MENUCONTENT_PLUS_2);
-	frameBuffer->paintBoxRel(xpos+ 1, ypos+ 1, input_w- 2, input_h- 2, bgcolor);
+	frameBuffer->paintBoxRel(xpos, ypos, input_w, input_h, bgcolor);
+	frameBuffer->paintBoxFrame(xpos, ypos, input_w, input_h, 1, COL_MENUCONTENT_PLUS_2);
 
 	int ch_w = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(ch);
 	int ch_x = xpos + std::max(input_w/2 - ch_w/2, 0);

@@ -318,6 +318,7 @@ ci.inserted CAM im Slot
 ci.mode CI Kanäle während einer Aufnahme
 ci.mode_0 alle Kanäle
 ci.mode_1 gleicher Transponder
+ci.mode_2 keine CI Kanäle
 ci.rec_zapto Umschalten bei Aufnahmen mit CAM
 ci.removed CAM entfernt -> Slot
 ci.reset Reset
@@ -1653,6 +1654,7 @@ menu.hint_subchannel_pos Wählen Sie die Anzeigeposition der Unterkanäle aus
 menu.hint_sw_update Neutrino aktualisieren, Image sichern und wiederherstellen
 menu.hint_theme Wählen Sie ein vordefiniertes Farbschema, speichern oder laden Sie ihre eigenen Farbschemata
 menu.hint_timeouts Gibt an, nach welcher Zeit in Sekunden die Menüs oder Infofenster sich automatisch schließen (0 deaktiviert)
+menu.hint_timer_followscreenings Zeige Terminauswahl mit Folge-Events zur Timerprogrammierung. "Immer" zeigt die Auswahl auch dann, wenn nur ein Event gefunden wurde.
 menu.hint_timers Hinzufügen, entfernen und bearbeiten geplanter Aufnahmen oder anderer Timer
 menu.hint_timezone Wählen Sie ihre Zeitzone aus
 menu.hint_tmdb_api_key Geben Sie den TMDb API Schlüssel ein. Eine leere Eingabe schaltet die TMDb-Unterstützung aus
@@ -1872,6 +1874,7 @@ moviebrowser.book_position Position:
 moviebrowser.book_type Sprung (<0 zurück, >0 vor):
 moviebrowser.book_type_backward Wiederholung
 moviebrowser.book_type_forward Überspringen
+moviebrowser.browser_additional Zusätzliche Informationen
 moviebrowser.browser_frame_high Anzeigehöhe oberes Fenster [%]
 moviebrowser.browser_row_head Spalten Einstellungen
 moviebrowser.browser_row_item Spalteninfo
@@ -1900,11 +1903,12 @@ moviebrowser.edit_book_type_info1 Neue Sprunglänge (s)
 moviebrowser.edit_book_type_info2 <0 zurück , >0 vor, 0: kein
 moviebrowser.edit_serie Name der Serie
 moviebrowser.error_no_movies Keine Filme gefunden
+moviebrowser.filter_off Filter aus
 moviebrowser.foot_filter Filter:
-moviebrowser.foot_focus Fenster umschalten
+moviebrowser.foot_focus Fenster wechseln
 moviebrowser.foot_options Optionen
-moviebrowser.foot_play Film starten
-moviebrowser.foot_refresh Liste neu laden
+moviebrowser.foot_play Wiedergabe
+moviebrowser.foot_refresh Neu laden
 moviebrowser.foot_sort Sortieren:
 moviebrowser.head Movie-Browser
 moviebrowser.head_filter Filme nach Kategorie filtern:
@@ -1937,10 +1941,10 @@ moviebrowser.info_file Datei
 moviebrowser.info_filename Dateiname
 moviebrowser.info_genre_major Genre
 moviebrowser.info_genre_minor Genre (untergeordnet)
-moviebrowser.info_head Film Informationen
+moviebrowser.info_head Film-Informationen
 moviebrowser.info_head_update Inhalte in allen sichtbaren Filminfos speichern
-moviebrowser.info_info1 Info 1
-moviebrowser.info_info2 Info 2
+moviebrowser.info_info1 Genre bzw. Episoden
+moviebrowser.info_info2 Film-Beschreibung
 moviebrowser.info_length Spieldauer (Min)
 moviebrowser.info_parental_lockage FSK
 moviebrowser.info_parental_lockage_0year immer
@@ -1958,6 +1962,7 @@ moviebrowser.info_rating Bewertung
 moviebrowser.info_recorddate Aufnahmedatum
 moviebrowser.info_serie Serie
 moviebrowser.info_size Dateigröße (MB)
+moviebrowser.info_spacer Abstandshalter
 moviebrowser.info_title Titel
 moviebrowser.info_videoformat Bildformat
 moviebrowser.last_play_max_items Zeilen 'zuletzt aufgenommen'
@@ -1996,9 +2001,9 @@ moviebrowser.short_filename Name
 moviebrowser.short_format Format
 moviebrowser.short_genre_major Genre
 moviebrowser.short_genre_minor Genre
-moviebrowser.short_info1 Info 1
-moviebrowser.short_info2 Info 2
-moviebrowser.short_length Min
+moviebrowser.short_info1 Genre/Episoden
+moviebrowser.short_info2 Beschreibung
+moviebrowser.short_length Länge
 moviebrowser.short_parental_lockage FSK
 moviebrowser.short_path Pfad
 moviebrowser.short_prevplaydate Zuletzt
@@ -2008,6 +2013,7 @@ moviebrowser.short_rating Vote
 moviebrowser.short_recorddate Datum
 moviebrowser.short_serie Serie
 moviebrowser.short_size Größe
+moviebrowser.short_spacer 
 moviebrowser.short_title Titel
 moviebrowser.start_head Film starten von Position:
 moviebrowser.start_record_start Aufnahmestart
@@ -2195,6 +2201,7 @@ opkg.update.check Prüfe auf Updates...
 opkg.update.reading_lists Paketlisten werden eingelesen...
 opkg.upgrade Installierte Pakete aktualisieren
 opkg.warning_3rdparty_packages Drittanbieter-Pakete könnten Ihr System beschädigen! Sind Sie sicher, dieses Paket zu installieren?
+options.always immer
 options.default Voreinstellungen benutzen
 options.fb framebuffer
 options.hint_default Setzen Sie die Werte auf die Voreinstellung zurück.
@@ -2393,6 +2400,16 @@ recordingmenu.vcr Videorekorder
 recordingmenu.vtxt_pid Teletext aufnehmen
 recordingmenu.zap_on_announce Umschalten bei Ankündigung
 recordtimer.announce Die Aufnahme beginnt in wenigen Minuten.
+remotebox_add hinzufügen
+remotebox_channel_na Kanal auf Remote-Box nicht verfügbar
+remotebox_del löschen
+remotebox_head Remote-Boxen
+remotebox_mod bearbeiten
+remotebox_pass Passwort
+remotebox_port Port
+remotebox_rbaddr Adresse
+remotebox_rbname Anzeigename
+remotebox_user Benutzer
 reset_all Werkseinstellungen und Reboot
 reset_channels Lösche Kanäle
 reset_confirm Sind Sie sich sicher?
@@ -2687,6 +2704,7 @@ timerlist.type.execplugin Plugin ausführen
 timerlist.type.nextprogram Nächstes Programm
 timerlist.type.record Aufnahme
 timerlist.type.remind Erinnerung
+timerlist.type.remotebox Remote-Aufnahme
 timerlist.type.shutdown Shutdown
 timerlist.type.sleeptimer Sleeptimer
 timerlist.type.standby Standby
@@ -2695,6 +2713,7 @@ timerlist.type.zapto Umschalten
 timerlist.weekdays Wochentage
 timerlist.weekdays.hint_1 Mo Di Mi Do Fr Sa So
 timerlist.weekdays.hint_2 'X'=Timer '-' kein Timer
+timersettings.followscreenings Zeige Terminauswahl
 timersettings.record_safety_time_after Aufnahmeende-Korrektur
 timersettings.record_safety_time_after.hint_1 Korrekturzeit in Min. (00=aus), die auf die End-
 timersettings.record_safety_time_after.hint_2 zeit des jeweiligen Timers addiert wird

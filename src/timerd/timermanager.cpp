@@ -294,9 +294,10 @@ int CTimerManager::unlockEvents()
 
 bool CTimerManager::listEvents(CTimerEventMap &Events)
 {
+/* events is passed as reference and thus its address is never NULL
 	if(!&Events)
 		return false;
-
+ */
 
 	Events.clear();
 	for (CTimerEventMap::iterator pos = events.begin(); pos != events.end(); ++pos)
@@ -1367,10 +1368,19 @@ bool CTimerEvent_Record::adjustToCurrentEPG()
 	CEitManager::getInstance()->getEventsServiceKey(eventInfo.channel_id, evtlist);
 
 	time_t now = time(NULL);
+	time_t compare;
+
+	int pre, post;
+	CTimerManager::getInstance()->getRecordingSafety(pre, post);
+
 	CChannelEventList::iterator first = evtlist.end();
 	for (CChannelEventList::iterator e = evtlist.begin(); e != evtlist.end(); ++e)
 	{
-		if (e->startTime <  now)
+		compare = e->startTime;
+		if (!pre)
+			compare += e->duration;
+
+		if (compare <= now)
 			continue;
 		if (first == evtlist.end() || first->startTime > e->startTime)
 			first = e;
@@ -1384,8 +1394,6 @@ bool CTimerEvent_Record::adjustToCurrentEPG()
 	time_t _alarmTime = first->startTime;
 	time_t _stopTime = first->startTime + first->duration;
 	if (recordingSafety) {
-		int pre, post;
-		CTimerManager::getInstance()->getRecordingSafety(pre, post);
 		_alarmTime -= pre;
 		_stopTime += post;
 	}

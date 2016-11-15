@@ -66,6 +66,14 @@ const CMenuOptionChooser::keyval OPTIONS_CA_INIT_OPTIONS[] =
 };
 #define OPTIONS_CA_INIT_OPTION_COUNT (sizeof(OPTIONS_CA_INIT_OPTIONS)/sizeof(CMenuOptionChooser::keyval))
 
+const CMenuOptionChooser::keyval OPTIONS_CI_MODE_OPTIONS[] =
+{
+	{ 0, LOCALE_CI_MODE_0 },
+	{ 1, LOCALE_CI_MODE_1 },
+	{ 2, LOCALE_CI_MODE_2 }
+};
+#define OPTIONS_CI_MODE_OPTION_COUNT (sizeof(OPTIONS_CI_MODE_OPTIONS)/sizeof(CMenuOptionChooser::keyval))
+
 void CCAMMenuHandler::init(void)
 {
 	hintBox = NULL;

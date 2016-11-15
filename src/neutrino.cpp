@@ -563,6 +563,31 @@ int CNeutrinoApp::loadSetup(const char * fname)
 		g_settings.shutdown_min = configfile.getInt32("shutdown_min", 000); //NI
 	g_settings.sleeptimer_min = configfile.getInt32("sleeptimer_min", 0);
 
+	g_settings.timer_remotebox_ip.clear();
+	int timer_remotebox_itemcount = configfile.getInt32("timer_remotebox_ip_count", 0);
+	if (timer_remotebox_itemcount) {
+		for (int i = 0; i < timer_remotebox_itemcount; i++) {
+			timer_remotebox_item timer_rb;
+			std::string k;
+			k = "timer_remotebox_ip_" + to_string(i);
+			timer_rb.rbaddress = configfile.getString(k, "");
+			if (timer_rb.rbaddress.empty())
+				continue;
+			k = "timer_remotebox_port_" + to_string(i);
+			timer_rb.port = configfile.getInt32(k, 80);
+			k = "timer_remotebox_user_" + to_string(i);
+			timer_rb.user = configfile.getString(k, "");
+			k = "timer_remotebox_pass_" + to_string(i);
+			timer_rb.pass = configfile.getString(k, "");
+			k = "timer_remotebox_rbname_" + to_string(i);
+			timer_rb.rbname = configfile.getString(k, "");
+			if (timer_rb.rbname.empty())
+				timer_rb.rbname = timer_rb.rbaddress;
+			g_settings.timer_remotebox_ip.push_back(timer_rb);
+		}
+	}
+	g_settings.timer_followscreenings = configfile.getInt32( "timer_followscreenings", 1 );
+
 	g_settings.infobar_sat_display   = configfile.getBool("infobar_sat_display"  , true );
 	g_settings.infobar_show_channeldesc   = configfile.getBool("infobar_show_channeldesc"  , false );
 	g_settings.infobar_subchan_disp_pos = configfile.getInt32("infobar_subchan_disp_pos"  , 0 );
@@ -1144,6 +1169,7 @@ void CNeutrinoApp::upgradeSetup(const char * fname)
 			configfile.setString("usermenu_tv_yellow", g_settings.usermenu[SNeutrinoSettings::BUTTON_YELLOW]->items);
 		}
 	}
+	//NI
 	if (g_settings.version_pseudo < "20160623110000")
 	{
 		if (g_settings.screen_xres == 112)
@@ -1152,10 +1178,20 @@ void CNeutrinoApp::upgradeSetup(const char * fname)
 		if (g_settings.screen_yres == 112)
 			g_settings.screen_yres = 105;
 	}
+	//NI
 	if (g_settings.version_pseudo < "20160804110000")
 	{
 		if (g_settings.tmdb_api_key == "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
 			g_settings.tmdb_api_key = "7270f1b571c4ecbb5b204ddb7f8939b1";
+	}
+	//NI
+	if (g_settings.version_pseudo < "20161411235900")
+	{
+		//convert and remove obsolete recording_tevents key
+		bool recording_tevents = configfile.getBool("recording_tevents", false);
+		if (recording_tevents)
+			g_settings.timer_followscreenings = 2 /*always*/;
+		configfile.deleteKey("recording_tevents");
 	}
 
 	g_settings.version_pseudo = NEUTRINO_VERSION_PSEUDO;
@@ -1299,6 +1335,25 @@ void CNeutrinoApp::saveSetup(const char * fname)
 	configfile.setInt32("shutdown_count"           , g_settings.shutdown_count);
 	configfile.setInt32("shutdown_min"  , g_settings.shutdown_min  );
 	configfile.setInt32("sleeptimer_min", g_settings.sleeptimer_min);
+
+	int timer_remotebox_itemcount = 0;
+	for (std::vector<timer_remotebox_item>::iterator it = g_settings.timer_remotebox_ip.begin(); it != g_settings.timer_remotebox_ip.end(); ++it) {
+		std::string k;
+		k = "timer_remotebox_ip_" + to_string(timer_remotebox_itemcount);
+		configfile.setString(k, it->rbaddress);
+		k = "timer_remotebox_rbname_" + to_string(timer_remotebox_itemcount);
+		configfile.setString(k, it->rbname);
+		k = "timer_remotebox_user_" + to_string(timer_remotebox_itemcount);
+		configfile.setString(k, it->user);
+		k = "timer_remotebox_pass_" + to_string(timer_remotebox_itemcount);
+		configfile.setString(k, it->pass);
+		k = "timer_remotebox_port_" + to_string(timer_remotebox_itemcount);
+		configfile.setInt32(k, it->port);
+		timer_remotebox_itemcount++;
+	}
+	configfile.setInt32 ( "timer_remotebox_ip_count", g_settings.timer_remotebox_ip.size());
+	configfile.setInt32 ("timer_followscreenings", g_settings.timer_followscreenings);
+
 	configfile.setBool("infobar_sat_display"  , g_settings.infobar_sat_display  );
 	configfile.setBool("infobar_show_channeldesc"  , g_settings.infobar_show_channeldesc  );
 	configfile.setInt32("infobar_subchan_disp_pos"  , g_settings.infobar_subchan_disp_pos  );

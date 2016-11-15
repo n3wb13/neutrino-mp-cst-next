@@ -147,6 +147,15 @@ struct SNeutrinoTheme
 	unsigned char clock_Digit_blue;
 };
 
+struct timer_remotebox_item
+{
+		unsigned int port;
+		std::string user;
+		std::string pass;
+		std::string rbname;
+		std::string rbaddress;
+};
+
 struct SNeutrinoSettings
 {
 	std::string version_pseudo;
@@ -508,6 +517,8 @@ struct SNeutrinoSettings
 	int recording_fill_warning; //NI
 	int recording_startstop_msg;
 	int shutdown_timer_record_type;
+	std::vector<timer_remotebox_item> timer_remotebox_ip;
+	int timer_followscreenings;
 	std::string recording_filename_template;
 	int recording_already_found_check;
 
@@ -747,9 +758,9 @@ struct SNeutrinoSettings
 		FONT_TYPE_INFOBAR_ECMINFO, //NI
 		FONT_TYPE_FILEBROWSER_ITEM,
 		FONT_TYPE_MENU_HINT,
-		FONT_TYPE_MOVIEBROWSER_HEAD, //NI
-		FONT_TYPE_MOVIEBROWSER_LIST, //NI
-		FONT_TYPE_MOVIEBROWSER_INFO, //NI
+		FONT_TYPE_MOVIEBROWSER_HEAD,
+		FONT_TYPE_MOVIEBROWSER_LIST,
+		FONT_TYPE_MOVIEBROWSER_INFO,
 		FONT_TYPE_SUBTITLES,
 		FONT_TYPE_COUNT
 	};
@@ -1037,7 +1048,7 @@ const time_settings_struct_t timing_setting[SNeutrinoSettings::TIMING_SETTING_CO
 #define OFFSET_INNER_LARGE	20
 #define OFFSET_INNER_MID	10
 #define OFFSET_INNER_SMALL	5
-
+#define OFFSET_INNER_MIN	2
 
 struct SglobalInfo
 {
