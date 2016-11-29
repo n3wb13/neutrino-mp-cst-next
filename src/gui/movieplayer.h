@@ -270,9 +270,6 @@ class CMoviePlayerGui : public CMenuTarget
 
 	static CMoviePlayerGui& getInstance(bool background = false);
 
-	MI_MOVIE_INFO * p_movie_info;
-	std::string	file_name;
-	std::string	pretty_name;
 	int exec(CMenuTarget* parent, const std::string & actionKey);
 	bool Playing() { return playing; };
 	bool osdTimeVisible() { return FileTime.IsVisible(); };
@@ -280,7 +277,6 @@ class CMoviePlayerGui : public CMenuTarget
 	int GetSpeed() { return speed; }
 	int GetPosition() { return position; }
 	int GetDuration() { return duration; }
-	int getState() { return playstate; }
 	void UpdatePosition();
 	int timeshift;
 	int file_prozent;
