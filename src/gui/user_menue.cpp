@@ -389,11 +389,6 @@ bool CUserMenu::showUserMenu(neutrino_msg_t msg)
 			menu_item = new CMenuForwarder(LOCALE_USERMENU_ITEM_ADZAP, true, adzap_active ? g_Locale->getText(LOCALE_OPTIONS_OFF) : NULL, CAdZapMenu::getInstance(), "adzap", key, icon);
 			menu_item->setHint(NEUTRINO_ICON_HINT_ADZAP, adzap_active ? LOCALE_MENU_HINT_ADZAP_ACTIVE : LOCALE_MENU_HINT_ADZAP);
 			break;
-		case SNeutrinoSettings::ITEM_TUNER_RESTART:
-			keyhelper.get(&key,&icon);
-			menu_item = new CMenuForwarder(LOCALE_SERVICEMENU_RESTART_TUNER, true, NULL, neutrino, "restarttuner", key, icon);
-			menu_item->setHint(NEUTRINO_ICON_HINT_RELOAD_CHANNELS, LOCALE_MENU_HINT_RESTART_TUNER);
-			break;
 #if HAVE_SPARK_HARDWARE || HAVE_DUCKBOX_HARDWARE
 		case SNeutrinoSettings::ITEM_THREE_D_MODE:
 			keyhelper.get(&key,&icon);
