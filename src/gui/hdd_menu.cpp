@@ -325,7 +325,7 @@ bool CHDDMenuHandler::mount_dev(std::string name)
 			if (mount(device.c_str(), it->mountpoint.c_str(), type, MS_MGC_VAL | MS_NOATIME | MS_NODIRATIME,"") == 0)
 				it->mounted=true;
 			else
-				ShowMsg ( LOCALE_NFS_MOUNTERROR , g_Locale->getText(LOCALE_NFS_MOUNTERROR_NOTSUP) , CMessageBox::mbrOk, CMessageBox::mbrOk);
+				ShowMsg ( LOCALE_NFS_MOUNTERROR , g_Locale->getText(LOCALE_NFS_MOUNTERROR_NOTSUP) , CMsgBox::mbrOk, CMsgBox::mbrOk);
 		}
 	}
 #endif
@@ -1321,7 +1321,7 @@ int CHDDDestExec::exec(CMenuTarget* /*parent*/, const std::string&)
 
 		if (removable) {
 			// show USB icon, no need for hdparm/hd-idle
-#if HAVE_DUCKBOX_HARDWARE || BOXMODEL_SPARK7162
+#if HAVE_DUCKBOX_HARDWARE || HAVE_SPARK_HARDWARE
 			CVFD::getInstance()->ShowIcon(FP_ICON_USB, true);
 #endif
 			printf("CHDDDestExec: /dev/%s is not a hdd, no sleep needed\n", namelist[i]->d_name);

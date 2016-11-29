@@ -1,5 +1,5 @@
 /*
-	Based up Neutrino-GUI - Tuxbox-Project
+	Based up Neutrino-GUI - Tuxbox-Project 
 	Copyright (C) 2001 by Steffen Hehn 'McClean'
 
 	Classes for generic GUI-related components.
@@ -115,7 +115,7 @@ class CComponentsItem : public CComponents
 					const int& sel_frame_w = 3);
 		///set enable mode, see also cc_item_enabled
 		virtual void setEnable(bool enabled){cc_item_enabled = enabled;};
-
+		
 		///get select mode, see also setSelected() above
 		virtual bool isSelected(){return cc_item_selected;};
 		///get enable mode, see also setEnable() above

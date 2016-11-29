@@ -987,6 +987,12 @@ keybindingmenu.pagedown page down
 keybindingmenu.pageup page up
 keybindingmenu.poweroff Power toggle
 keybindingmenu.quickzap Quickzap
+keybindingmenu.remotecontrol_code Remote control code
+keybindingmenu.remotecontrol_code_change Change remote control code
+keybindingmenu.remotecontrol_code_msg1 For changing the remote control code please press the buttons: back +
+keybindingmenu.remotecontrol_code_msg2 at the same time, after that press the button: OK for leaving the infobox.
+keybindingmenu.remotecontrol_code_not_save The remote control code has not been changed !
+keybindingmenu.remotecontrol_code_save Save new code
 keybindingmenu.remotecontrol_hardware Hardware
 keybindingmenu.remotecontrol_hardware_coolstream CST
 keybindingmenu.remotecontrol_hardware_dbox d-box Nokia (old)
@@ -1528,6 +1534,8 @@ menu.hint_record_zap_pre_time For ZapTo timers, switch channel\nbefore event sta
 menu.hint_recording Recording and timeshift options\nTimers safety, audio pids options
 menu.hint_reload_channels Reload channels from flash
 menu.hint_reload_plugins Reload plugins from flash
+menu.hint_remote_code For changing the code of the remote controls for Kathrein UFS912/13 models. It is possible to use four different codes ( 1 to 4 )
+menu.hint_remote_code_save Save and activate the new choosen code for remote control
 menu.hint_reset Reset GUI settings to defaults\nTuner config and channels not affected
 menu.hint_restart_tuner Restart the internal tuner. This may help if you're experiencing reception problems
 menu.hint_restore Restore files from selected backup
@@ -1631,7 +1639,7 @@ menu.hint_selected_back Change selected item background color
 menu.hint_selected_text Change selected item text color
 menu.hint_service Tuner setup, service scan,\nbouquet editor, software upgrade
 menu.hint_service_scan Auto and manual service scan
-menu.hint_settings Configure System\nNetwork, audio, video, OSD etc.
+menu.hint_settings Configure System\nNetwork, audio, video, OSD and more
 menu.hint_shoutcast_dev_id Type your SHOUTcast Dev ID. An empty input disables SHOUTcast support
 menu.hint_shoutcast_enabled Enable or disable SHOUTcast support
 menu.hint_show_mute_icon Show mute icon, when volume set to 0
@@ -1644,7 +1652,7 @@ menu.hint_sleeptimer Set timer to put your box\nin sleep mode
 menu.hint_sleeptimer_min Default setting for sleeptimer
 menu.hint_sms_channel If enabled, numeric buttons in channel list used to search channel in SMS style
 menu.hint_sms_movie If enabled, numeric buttons in moviebrowser used to search movie in SMS style
-menu.hint_soft_restart Restart graphical user interface without reboot
+menu.hint_soft_restart Restart GUI without reboot
 menu.hint_softupdate_check Check online update, download and flash firmware
 menu.hint_softupdate_check_local Select and flash firmware from local file
 menu.hint_softupdate_createimage_menu Backup of current software, including all settings
@@ -2630,8 +2638,8 @@ streaminfo.framerate_unknown unknown
 streaminfo.head Stream-Information
 streaminfo.not_available not available
 streaminfo.resolution Resolution
-streaminfo.signal Signal
-streaming.busy One or several recording processes are active.\nIf you encounter this message and no recording is active, please restart Neutrino.
+streaminfo.signal Receipt signal
+streaming.busy One or several recording processes are active.\nIf you encounter this message and no recording is active, please restart GUI.
 streaming.dir_not_writable The recording directory is not writable.\nRecording will not work.
 streaming.overflow Record buffer overflow, consider to stop some records
 streaming.slow System/hdd too slow, consider to stop some records

@@ -320,6 +320,7 @@ void CComponentsPicture::paintPicture()
 		if (duration)
 			fprintf(stderr, "\033[33m[CComponentsPicture] %s: %" PRIu64 " ms to paint image \033[0m\n",	__func__, duration);
 	}
+
 }
 
 void CComponentsPicture::paint(bool do_save_bg)
@@ -441,3 +442,5 @@ void CComponentsChannelLogo::setChannel(const uint64_t& channelId, const std::st
 
 	doPaintBg(false);
 }
+
+

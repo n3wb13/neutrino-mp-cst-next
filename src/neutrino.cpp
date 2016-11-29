@@ -415,7 +415,7 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	g_settings.softupdate_autocheck = configfile.getBool("softupdate_autocheck" , false);
 
 	// video
-#if HAVE_TRIPLEDRAGON || BOXMODEL_SPARK7162
+#if HAVE_TRIPLEDRAGON
 	int vid_Mode_default = VIDEO_STD_PAL;
 #else
 	int vid_Mode_default = VIDEO_STD_720P50;
@@ -998,7 +998,7 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	g_settings.lcd_setting_dim_time = configfile.getString("lcd_dim_time","0");
 	g_settings.lcd_setting_dim_brightness = configfile.getInt32("lcd_dim_brightness", 0);
 	g_settings.lcd_info_line = configfile.getInt32("lcd_info_line", 0);//channel name or clock
-#if HAVE_DUCKBOX_HARDWARE || BOXMODEL_SPARK7162
+#if HAVE_DUCKBOX_HARDWARE || HAVE_SPARK_HARDWARE
 	g_settings.lcd_vfd_scroll = configfile.getInt32("lcd_vfd_scroll", 1);
 #endif
 
@@ -1661,7 +1661,7 @@ void CNeutrinoApp::saveSetup(const char * fname)
 	configfile.setString("lcd_dim_time", g_settings.lcd_setting_dim_time);
 	configfile.setInt32("lcd_dim_brightness", g_settings.lcd_setting_dim_brightness);
 	configfile.setInt32("lcd_info_line", g_settings.lcd_info_line);//channel name or clock
-#if HAVE_DUCKBOX_HARDWARE || BOXMODEL_SPARK7162
+#if HAVE_DUCKBOX_HARDWARE || HAVE_SPARK_HARDWARE
 	configfile.setInt32("lcd_vfd_scroll", g_settings.lcd_vfd_scroll);
 #endif
 
@@ -2702,7 +2702,7 @@ void CNeutrinoApp::showInfo()
 	StartSubtitles();
 }
 
-#if HAVE_DUCKBOX_HARDWARE || BOXMODEL_SPARK7162
+#if HAVE_DUCKBOX_HARDWARE || HAVE_SPARK_HARDWARE
 static void check_timer()
 {
 	CTimerd::TimerList tmpTimerList;
@@ -2728,7 +2728,7 @@ void CNeutrinoApp::showMainMenu()
 	int old_mode = g_settings.epg_scan_mode;
 	int old_save_mode = g_settings.epg_save_mode;
 	mainMenu->exec(NULL, "");
-#if HAVE_DUCKBOX_HARDWARE || BOXMODEL_SPARK7162
+#if HAVE_DUCKBOX_HARDWARE || HAVE_SPARK_HARDWARE
 	CVFD::getInstance()->UpdateIcons();
 #endif
 	InfoClock->enableInfoClock(true);
@@ -2811,7 +2811,7 @@ void CNeutrinoApp::RealRun()
 			continue;
 #endif
 
-#if HAVE_DUCKBOX_HARDWARE || BOXMODEL_SPARK7162
+#if HAVE_DUCKBOX_HARDWARE || HAVE_SPARK_HARDWARE
 		check_timer();
 #endif
 		if (mode == mode_radio) {
@@ -3126,7 +3126,7 @@ void CNeutrinoApp::RealRun()
 					CMediaPlayerMenu::getInstance()->exec(NULL, "inetplayer");
 					break;
 				}
-#if HAVE_DUCKBOX_HARDWARE || BOXMODEL_SPARK7162
+#if HAVE_DUCKBOX_HARDWARE || HAVE_SPARK_HARDWARE
 				CVFD::getInstance()->UpdateIcons();
 #endif
 			}
@@ -3420,7 +3420,7 @@ int CNeutrinoApp::handleMsg(const neutrino_msg_t _msg, neutrino_msg_data_t data)
 #if HAVE_SPARK_HARDWARE || HAVE_DUCKBOX_HARDWARE
 		C3DSetup::getInstance()->exec(NULL, "zapped");
 #endif
-#if HAVE_DUCKBOX_HARDWARE || BOXMODEL_SPARK7162
+#if HAVE_DUCKBOX_HARDWARE || HAVE_SPARK_HARDWARE
 		CVFD::getInstance()->UpdateIcons();
 #endif
 #ifdef ENABLE_GRAPHLCD

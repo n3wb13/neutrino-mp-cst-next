@@ -108,8 +108,8 @@ int CSettingsManager::exec(CMenuTarget* parent, const std::string &actionKey)
 	{
 		struct statfs s;
 		int result = ShowMsg(LOCALE_SETTINGS_BACKUP, (std::string)g_Locale->getText(LOCALE_MOVIEBROWSER_INFO_PATH) + " : " + g_settings.image_settings_backup_path, \
-		CMessageBox::mbrYes, CMessageBox::mbYes | CMessageBox::mbNo);
-		if(result == CMessageBox::mbrNo)
+		CMsgBox::mbrYes, CMsgBox::mbYes | CMsgBox::mbNo);
+		if(result == CMsgBox::mbrNo)
 		{
 			fileBrowser.Dir_Mode = true;
 			if (fileBrowser.exec("/media") == true)
