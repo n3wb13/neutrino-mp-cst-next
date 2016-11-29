@@ -306,6 +306,7 @@ struct SNeutrinoSettings
 	int epg_save_standby;
 	int epg_save_frequently;
 	int epg_read;
+	int epg_read_frequently;
 	int epg_cache;
 	int epg_old_events;
 	int epg_max_events;
@@ -457,6 +458,7 @@ struct SNeutrinoSettings
 		TIMING_VOLUMEBAR	= 6,
 		TIMING_FILEBROWSER	= 7,
 		TIMING_NUMERICZAP	= 8,
+		TIMING_POPUP_MESSAGES	= 9,
 
 		TIMING_SETTING_COUNT
 	};
@@ -762,6 +764,7 @@ struct SNeutrinoSettings
 		FONT_TYPE_MOVIEBROWSER_LIST,
 		FONT_TYPE_MOVIEBROWSER_INFO,
 		FONT_TYPE_SUBTITLES,
+		FONT_TYPE_MESSAGE_TEXT,
 		FONT_TYPE_COUNT
 	};
 
@@ -1008,7 +1011,8 @@ const time_settings_struct_t timing_setting[SNeutrinoSettings::TIMING_SETTING_CO
  	{ 6,	LOCALE_TIMING_INFOBAR_MOVIEPLAYER},
  	{ 3,	LOCALE_TIMING_VOLUMEBAR   },
 	{ 180,	LOCALE_TIMING_FILEBROWSER }, //NI
-	{ 3,	LOCALE_TIMING_NUMERICZAP  }
+	{ 3,	LOCALE_TIMING_NUMERICZAP  },
+	{ 6,	LOCALE_TIMING_POPUP_MESSAGES}
 };
 
 // lcdd

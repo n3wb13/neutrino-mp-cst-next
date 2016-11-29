@@ -64,6 +64,7 @@
 #ifdef VISUAL_DEBUG
 #include <gui/color_custom.h>
 #endif
+#include <sstream>
 
 #define	SCROLL_FRAME_WIDTH	10
 #define	SCROLL_MARKER_BORDER	 2
@@ -591,7 +592,7 @@ void CTextBox::refreshText(void)
 	//bg variables
 	int ax = m_cFrameTextRel.iX+m_cFrame.iX;
 	int ay = m_cFrameTextRel.iY+m_cFrame.iY;
-	int dx = m_old_cText != m_cText || m_nNrOfPages>1 ? m_cFrameTextRel.iWidth : m_nMaxTextWidth - m_nBgRadius;
+	int dx = m_old_cText != m_cText || m_nNrOfPages>1 ? m_cFrameTextRel.iWidth : m_nMaxTextWidth - (m_nMode & SCROLL ? m_nBgRadius : 0);
 	int dy = m_cFrameTextRel.iHeight;
 	
 	//avoid artefacts in transparent cornes
@@ -883,3 +884,37 @@ bool CTextBox::enableSaveScreen(bool mode)
 	return true;
 }
 
+int CTextBox::getLines(const std::string& text)
+{
+	if (text.empty())
+		return 0;
+
+	std::stringstream s (text);
+	if (!s)
+		return 0;
+
+	int count = 0;
+	std::string line;
+	while(getline(s, line))
+		count++;
+
+	return count;
+}
+
+int CTextBox::getMaxLineWidth(const std::string& text, Font* font)
+{
+	// if found no linebreak, return pure size only
+	if (text.find('\n', 0) == std::string::npos)
+		return font->getRenderWidth(text.c_str());
+
+	std::stringstream in (text);
+	if (!in)
+		return 0;
+
+	int len = 0;
+	std::string line;
+	while(getline(in, line))
+		len = std::max(len, font->getRenderWidth(line.c_str()));
+
+	return len;
+}

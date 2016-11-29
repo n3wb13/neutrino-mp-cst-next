@@ -51,7 +51,7 @@
 #include <cs_api.h> //NI
 #include <gui/widget/icons.h>
 #include <gui/widget/stringinput.h>
-#include <gui/widget/messagebox.h>
+#include <gui/widget/msgbox.h>
 #include <gui/widget/hintbox.h>
 #include <gui/widget/progresswindow.h>
 #include <gui/widget/keyboard_input.h>
@@ -417,8 +417,8 @@ bool CHDDMenuHandler::waitfordev(std::string dev, int maxwait)
 
 void CHDDMenuHandler::showHint(std::string &message)
 {
-	CHintBox * hintBox = new CHintBox(LOCALE_MESSAGEBOX_INFO, message.c_str());
-	hintBox->paint();
+	CHintBox hintBox(LOCALE_MESSAGEBOX_INFO, message.c_str());
+	hintBox.paint();
 
 	uint64_t timeoutEnd = CRCInput::calcTimeoutEnd(3);
         neutrino_msg_t      msg;
@@ -436,7 +436,7 @@ void CHDDMenuHandler::showHint(std::string &message)
 		else if (CNeutrinoApp::getInstance()->handleMsg(msg, data) & messages_return::cancel_all)
 			break;
 	}
-	delete hintBox;
+	hintBox.hide();
 }
 
 void CHDDMenuHandler::setRecordPath(std::string &dev)
@@ -456,8 +456,8 @@ void CHDDMenuHandler::setRecordPath(std::string &dev)
 	}
 	bool old_menu = in_menu;
 	in_menu = false;
-	int res = ShowMsg(LOCALE_RECORDINGMENU_DEFDIR, LOCALE_HDD_SET_RECDIR, CMessageBox::mbrNo, CMessageBox::mbYes | CMessageBox::mbNo);
-	if(res == CMessageBox::mbrYes) {
+	int res = ShowMsg(LOCALE_RECORDINGMENU_DEFDIR, LOCALE_HDD_SET_RECDIR, CMsgBox::mbrNo, CMsgBox::mbYes | CMsgBox::mbNo);
+	if(res == CMsgBox::mbrYes) {
 		g_settings.network_nfs_recordingdir = newpath;
 		CRecordManager::getInstance()->SetDirectory(g_settings.network_nfs_recordingdir);
 		if(g_settings.timeshiftdir.empty())
@@ -511,8 +511,8 @@ int CHDDMenuHandler::handleMsg(const neutrino_msg_t msg, neutrino_msg_data_t dat
 			showHint(message);
 		    else {
 			message +=  std::string(" ") + g_Locale->getText(LOCALE_HDD_FORMAT) + std::string(" ?");
-			int res = ShowMsg(LOCALE_MESSAGEBOX_INFO, message, CMessageBox::mbrNo, CMessageBox::mbYes | CMessageBox::mbNo);
-			if(res == CMessageBox::mbrYes) {
+			int res = ShowMsg(LOCALE_MESSAGEBOX_INFO, message, CMsgBox::mbrNo, CMsgBox::mbYes | CMsgBox::mbNo);
+			if(res == CMsgBox::mbrYes) {
 				unsigned char * p = new unsigned char[dev.size() + 1];
 				if (p) {
 					sprintf((char *)p, "%s", dev.c_str());
@@ -568,8 +568,8 @@ int CHDDMenuHandler::exec(CMenuTarget* parent, const std::string &actionkey)
 	if (actionkey[0] == 'm') {
 		for (std::vector<hdd_s>::iterator it = hdd_list.begin(); it != hdd_list.end(); ++it) {
 			if (it->devname == dev) {
-				CHintBox * hintbox = new CHintBox(it->mounted ? LOCALE_HDD_UMOUNT : LOCALE_HDD_MOUNT, it->devname.c_str());
-				hintbox->paint();
+				CHintBox hintbox(it->mounted ? LOCALE_HDD_UMOUNT : LOCALE_HDD_MOUNT, it->devname.c_str());
+				hintbox.paint();
 				if  (it->mounted)
 					umount_dev(it->mountpoint);
 				else
@@ -578,7 +578,7 @@ int CHDDMenuHandler::exec(CMenuTarget* parent, const std::string &actionkey)
 				it->cmf->setOption(g_Locale->getText(it->mounted ? LOCALE_HDD_UMOUNT : LOCALE_HDD_MOUNT));
 				it->desc = it->devname + " ("+std::string(it->label)+"," + it->fmt + ") " + it->mountpoint;
 				it->cmf->setName(it->desc.c_str());
-				delete hintbox;
+				hintbox.hide();
 				return menu_return::RETURN_REPAINT;
 			}
 		}
@@ -908,7 +908,7 @@ _show_menu:
 
 void CHDDMenuHandler::showError(neutrino_locale_t err)
 {
-	ShowMsg(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText(err), CMessageBox::mbrOk, CMessageBox::mbOk);
+	ShowMsg(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText(err), CMsgBox::mbrOk, CMsgBox::mbOk);
 }
 
 int CHDDMenuHandler::formatDevice(std::string dev)
@@ -943,8 +943,8 @@ int CHDDMenuHandler::formatDevice(std::string dev)
 		mkfscmd = devtool->mkfs + " " + "-L " + fmt_label + " " + devtool->mkfs_options + " " + partname;
 	printf("mkfs cmd: [%s]\n", mkfscmd.c_str());
 
-	res = ShowMsg(LOCALE_HDD_FORMAT, g_Locale->getText(LOCALE_HDD_FORMAT_WARN), CMessageBox::mbrNo, CMessageBox::mbYes | CMessageBox::mbNo );
-	if(res != CMessageBox::mbrYes)
+	res = ShowMsg(LOCALE_HDD_FORMAT, g_Locale->getText(LOCALE_HDD_FORMAT_WARN), CMsgBox::mbrNo, CMsgBox::mbYes | CMsgBox::mbNo );
+	if(res != CMsgBox::mbrYes)
 		return menu_return::RETURN_REPAINT;
 
 	//NI bool srun = my_system(3, "killall", "-9", "smbd");

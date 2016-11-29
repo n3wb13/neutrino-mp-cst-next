@@ -44,7 +44,7 @@
 #if 0
 #include <gui/buildinfo.h>
 #endif
-#include <gui/widget/messagebox.h> //NI
+#include <gui/widget/msgbox.h> //NI
 
 #include <driver/screen_max.h>
 #if !HAVE_SPARK_HARDWARE
@@ -77,7 +77,7 @@ int CInfoMenu::exec(CMenuTarget* parent, const std::string &actionKey) //NI
 #ifdef BOXMODEL_APOLLO
 		sprintf(str, "%scs_get_chip_type(): 0x%04X\n", str, cs_get_chip_type());
 #endif
-		ShowMsg(LOCALE_MESSAGEBOX_INFO, str, CMessageBox::mbrBack, CMessageBox::mbBack);
+		ShowMsg(LOCALE_MESSAGEBOX_INFO, str, CMsgBox::mbrBack, CMsgBox::mbBack);
 		return res;
 	}
 
