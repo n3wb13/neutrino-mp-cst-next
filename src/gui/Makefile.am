@@ -11,7 +11,7 @@ version.h:
 		pushd $(top_srcdir) ; \
 		GITTAG=$$(git tag -l "NI-*" | tail -n1); \
 		GITBRANCH=$$(git rev-parse --abbrev-ref HEAD) ; \
-		GITDESCRIBE=$$(git describe --always --tags --dirty --match $$GITTAG || echo 'VCS failed') ; \
+		GITDESCRIBE=$$(git describe --always --tags --dirty || echo 'VCS failed') ; \
 		popd ; \
 		echo '#define VCS "'$${GITDESCRIBE} [$${GITBRANCH}]'"' >> $@ ; \
 	fi
