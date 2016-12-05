@@ -228,7 +228,7 @@ class CMoviePlayerGui : public CMenuTarget
 	bool StartWebtv();
 
 	void quickZap(neutrino_msg_t msg);
-	void showHelpTS(void);
+	void showHelp(void);
 	void callInfoViewer(bool init_vzap_it = true);
 	void fillPids();
 	bool getAudioName(int pid, std::string &apidtitle);
