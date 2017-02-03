@@ -57,6 +57,7 @@ CCDraw::CCDraw() : COSDFader(g_settings.theme.menu_Content_alpha)
 	cc_save_bg		= false;
 	firstPaint		= true;
 	is_painted		= false;
+	force_paint_bg	= false;
 	paint_bg 		= true;
 	cc_allow_paint		= true;
 	cc_enable_frame		= true;
@@ -546,7 +547,7 @@ void CCDraw::paintFbItems(bool do_save_bg)
 				v_fbdata[i].is_painted = true;
 			}
 		}
-		if (fbtype == CC_FBDATA_TYPE_SHADOW_BOX && ((!is_painted || !fbdata.is_painted)|| shadow_force)) {
+		if (fbtype == CC_FBDATA_TYPE_SHADOW_BOX && ((!is_painted || !fbdata.is_painted)|| shadow_force || force_paint_bg)) {
 			if (fbdata.enabled) {
 				/* here we paint the shadow around the body
 					* on 1st step we check for already cached screen buffer, if true
@@ -629,13 +630,35 @@ void CCDraw::paintFbItems(bool do_save_bg)
 								fbdata.pixbuf = getScreen(fbdata.x, fbdata.y, fbdata.dx, fbdata.dy);
 						}
 					}
-					is_painted = v_fbdata[i].is_painted = true;
+					v_fbdata[i].is_painted = true;
+					OnAfterPaintBg();
 				}
 			}
 		}
 	}
+
+	//set is_painted attribut. if any layer was painted set it to true;
+	if (force_paint_bg){
+		is_painted = false;
+	}else{
+		for(size_t i=0; i< v_fbdata.size(); i++){
+			if (v_fbdata[i].is_painted){
+				is_painted = true;
+				break;
+			}
+		}
+	}
+
+	//reset is painted ignore flag to default value
+	force_paint_bg = false;
+
 	//pick up signal if filled
 	OnAfterPaintLayers();
+}
+
+bool CCDraw::isPainted()
+{
+	return is_painted;
 }
 
 void CCDraw::hide()
@@ -652,8 +675,8 @@ void CCDraw::hide()
 			}
 		}
 	}
-	is_painted = false;
 	firstPaint = true;
+	is_painted = false;
 	frameBuffer->blit();
 	OnAfterHide();
 }
@@ -669,13 +692,18 @@ void CCDraw::kill(const fb_pixel_t& bg_color, const int& corner_radius, const in
 			int r =  v_fbdata[i].r;
 			if (corner_radius > -1)
 				r = corner_radius;
-			frameBuffer->paintBoxRel(v_fbdata[i].x,
-						 v_fbdata[i].y,
-						 v_fbdata[i].dx,
-						 v_fbdata[i].dy,
-						 bg_color,
-						 r,
-						 corner_type);
+
+			if (v_fbdata[i].dx > 0 && v_fbdata[i].dy > 0){
+				frameBuffer->paintBoxRel(v_fbdata[i].x,
+							v_fbdata[i].y,
+							v_fbdata[i].dx,
+							v_fbdata[i].dy,
+							bg_color,
+							r,
+							corner_type);
+			}else
+				dprintf(DEBUG_DEBUG, "\033[33m[CCDraw][%s - %d], WARNING! render with bad dimensions [dx = %d dy = %d]\033[0m\n", __func__, __LINE__, v_fbdata[i].dx, v_fbdata[i].dy );
+
 			if (v_fbdata[i].frame_thickness)
 					frameBuffer->paintBoxFrame(v_fbdata[i].x,
 								   v_fbdata[i].y,
@@ -728,24 +756,27 @@ void CCDraw::enableShadow(int mode, const int& shadow_width, bool force_paint)
 
 void CCDraw::paintTrigger()
 {
-	if (!is_painted)
-		paint1();
-	else
+	if (is_painted)
 		hide();
+	else
+		paint();
+}
+
+bool CCDraw::paintBlink(CComponentsTimer* Timer)
+{
+	if (Timer){
+		Timer->OnTimer.connect(cc_draw_trigger_slot);
+		return Timer->isRun();
+	}
+	return false;
 }
 
 bool CCDraw::paintBlink(const int& interval, bool is_nano)
 {
-	if (cc_draw_timer == NULL){
+	if (cc_draw_timer == NULL)
 		cc_draw_timer = new CComponentsTimer(interval, is_nano);
-		if (cc_draw_timer->OnTimer.empty()){
-			cc_draw_timer->OnTimer.connect(cc_draw_trigger_slot);
-		}
-	}
-	if (cc_draw_timer)
-		return cc_draw_timer->isRun();
 
-	return false;
+	return paintBlink(cc_draw_timer);
 }
 
 bool CCDraw::cancelBlink(bool keep_on_screen)

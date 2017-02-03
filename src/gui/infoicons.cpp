@@ -53,14 +53,14 @@ typedef struct icon_data_t
 
 static icon_data_t icon[MODE_ICONS_NR_OF_ENTRIES]=
 {
-	{-1, 0, 0, 0, "info0", ""},
-	{-1, 0, 0, 2, "info1", ""},
-	{-1, 0, 0, 2, "info2", ""},
-	{-1, 0, 0, 2, "info3", ""},
-	{-1, 0, 0, 2, "info4", ""},
-	{-1, 0, 0, 2, "info5", ""},
-	{-1, 0, 0, 2, "info6", ""},
-	{-1, 0, 0, 2, "info7", ""}
+	{-1, 0, 0, OFFSET_INNER_NONE , "info0", ""},
+	{-1, 0, 0, OFFSET_INNER_SMALL, "info1", ""},
+	{-1, 0, 0, OFFSET_INNER_SMALL, "info2", ""},
+	{-1, 0, 0, OFFSET_INNER_SMALL, "info3", ""},
+	{-1, 0, 0, OFFSET_INNER_SMALL, "info4", ""},
+	{-1, 0, 0, OFFSET_INNER_SMALL, "info5", ""},
+	{-1, 0, 0, OFFSET_INNER_SMALL, "info6", ""},
+	{-1, 0, 0, OFFSET_INNER_SMALL, "info7", ""}
 };
 
 CInfoIcons::CInfoIcons()
@@ -101,9 +101,9 @@ void CInfoIcons::Init()
 {
 	std::ostringstream buf;
 
-	x	= frameBuffer->getScreenX() + 10;
+	x	= frameBuffer->getScreenX() + OFFSET_INNER_MID;
 	y	= frameBuffer->getScreenY();
-	offset	= 10;
+	offset	= OFFSET_INNER_MID;
 
 	int icons_width  = 0;
 	int icons_height = 0;
@@ -112,14 +112,10 @@ void CInfoIcons::Init()
 	{
 		int icon_sizeW	= 0;
 		int icon_sizeH	= 0;
-		buf.str("");
-		buf << ICONSDIR << "/" << icon[i].name << "_on.png";
 		// we assume the _off-partner exist and has same dimensions
-		if (access(buf.str().c_str(), F_OK) == 0) {
-			buf.str("");
-			buf << icon[i].name << "_on";
-			frameBuffer->getIconSize(buf.str().c_str(), &icon_sizeW, &icon_sizeH);
-		}
+		buf.str("");
+		buf << icon[i].name << "_on";
+		frameBuffer->getIconSize(buf.str().c_str(), &icon_sizeW, &icon_sizeH);
 
 		if (icon_sizeW && icon_sizeH)
 		{

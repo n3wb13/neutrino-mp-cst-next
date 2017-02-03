@@ -354,7 +354,6 @@ colormenu.advanced_mode_off Standard-Optionen
 colormenu.advanced_mode_on Erweiterte Optionen
 colormenu.background Hintergrundfarbe
 colormenu.clock_textcolor Ziffernfarbe
-colormenu.contrast_fonts Schriftkontrast
 colormenu.fade Ein-/Ausblenden
 colormenu.font Verwendete Schriftart
 colormenu.font_sub Untertitel-Schriftart
@@ -362,6 +361,8 @@ colormenu.font_ttx Teletext Schriftart
 colormenu.hd_preset LCD
 colormenu.menucolors Farben
 colormenu.osd_preset Monitor Auswahl
+colormenu.progressbar_active Farbe des aktiven Teil
+colormenu.progressbar_passive Hintergrundfarbe
 colormenu.sd_preset CRT
 colormenu.textcolor Textfarbe
 colormenu.themeselect Theme auswählen
@@ -763,6 +764,7 @@ fontmenu.scaling_x_hint2 Horizontal (in %) min 50 / max 200
 fontmenu.scaling_y Vertikal (in %)
 fontmenu.scaling_y_hint2 Vertikal (in %) min 50 / max 200
 fontmenu.sizes Schriftgrößen
+fontsize.button_text Schaltflächen-Text
 fontsize.channel_num_zap Direktauswahl
 fontsize.channellist Kanalliste
 fontsize.channellist_descr Beschreibung
@@ -933,7 +935,7 @@ infoicons_switch_on Infoicons einblenden
 infoviewer.epgnotload Informationen noch nicht geladen ...
 infoviewer.epgwait Warte auf EPG-Informationen ...
 infoviewer.iconset Iconset
-infoviewer.iconset_pkg0 Original
+infoviewer.iconset_pkg0 NI-Material-Design
 infoviewer.iconset_pkg1 NI-Dark
 infoviewer.iconset_pkg2 NI-Bright
 infoviewer.iconset_pkg3 NI-Flat
@@ -1202,7 +1204,6 @@ menu.hint_colored_events_textcolor Ändern Sie die Farbe für farbige Events in 
 menu.hint_colors Konfigurieren Sie die Menü-Farben
 menu.hint_content_back Ändern Sie die Hintergrundfarbe für den Fensterinhalt
 menu.hint_content_textcolor Ändern Sie die Textfarbe für den Fensterinhalt
-menu.hint_contrast_fonts Wählen Sie einen höheren Schriftkontrast
 menu.hint_dboxinfo Informationen über CPU und Arbeitsspeicher der Box
 menu.hint_delete_channels Löschen aller Kanäle
 menu.hint_delete_removed Lösche das Bouquet 'Gelöschte Kanäle'
@@ -1214,6 +1215,7 @@ menu.hint_epg_max_events Maxiale Anzahl der Events im Zwischenspeicher
 menu.hint_epg_old_events Veraltete EPG-Daten werden nach dieser Zeit (in Stunden) verworfen
 menu.hint_epg_read Liest nach einem Neustart die EPG-Daten von einem externen Datenträger wieder ein
 menu.hint_epg_read_frequently Liest die EPG-Daten in regelmäßigen Abständen von einem externen Datenträger
+menu.hint_epg_read_now Liest die EPG-Daten von einem externen Datenträger ein
 menu.hint_epg_save Speichert die EPG-Daten beim Herunterfahren auf einem externen Datenträger
 menu.hint_epg_save_frequently Speichert die EPG-Daten in regelmäßigen Abständen auf einem externen Datenträger
 menu.hint_epg_save_mode Speichert die EPG-Daten nur für Sender, die in die Favoriten aufgenommen sind
@@ -1489,9 +1491,11 @@ menu.hint_power_leds Konfiguriert das Verhalten der LEDs an der Power-Taste
 menu.hint_pref_lang Wählen Sie ihre bevorzugte Tonspur und EPG-Sprache,\ndie Einstellung 'none' deaktiviert diese Option
 menu.hint_pref_subs Wählen Sie ihre bevorzugte Untertitel-Sprache,\ndie Einstellung 'none' deaktiviert diese Option
 menu.hint_progressbar Wählen Sie die Optionen für die Fortschrittsbalken-Anzeige
+menu.hint_progressbar_active Ändern Sie die Farbe für den aktiven Teil der Fortschrittsbalken-Anzeige
 menu.hint_progressbar_color Erscheinungsbild der Fortschrittsbalken auswählen
 menu.hint_progressbar_gradient Fügt dem Fortschrittsbalken einen vertikalen Helligkeitsverlauf hinzu.
 menu.hint_progressbar_infobar_position Wählt die Optionen des Fortschrittsbalkens in der Infobar
+menu.hint_progressbar_passive Ändern Sie die Farbe für den Hintergrund der Fortschrittsbalken-Anzeige
 menu.hint_progressbar_preview Mit der OK-Taste können Sie den Stand des Fortschrittsbalkens ändern
 menu.hint_progressbar_timescale_green Hier können Sie den grünen Farbanteil bunter Fortschrittsbalken anpassen
 menu.hint_progressbar_timescale_invert Wählen Sie den Farbverlauf
@@ -1762,6 +1766,7 @@ miscsettings.epg_old_events_hint1 Wie lange abgelaufene EPG-Daten aufheben?
 miscsettings.epg_old_events_hint2 Angabe in Stunden
 miscsettings.epg_read Gespeicherte EPG-Daten einlesen
 miscsettings.epg_read_frequently EPG regelmäßig einlesen
+miscsettings.epg_read_now Gespeichterte EPG-Daten jetzt einlesen
 miscsettings.epg_save EPG zwischenspeichern
 miscsettings.epg_save_frequently EPG regelmäßig speichern
 miscsettings.epg_save_mode Nur Favoriten
@@ -2658,6 +2663,7 @@ subtitles.head Untertitel
 subtitles.stop Untertitel aus
 terrestrialsetup.area Region
 terrestrialsetup.provider DVB-T Versorgungsbereich
+testmenu Testmenü
 three.d.off Deaktiviert
 three.d.save Für Kanal speichern
 three.d.settings 3D-Einstellung
@@ -2711,8 +2717,8 @@ timerlist.repeat.wednesday Mi
 timerlist.repeat.weekdays An Wochentagen
 timerlist.repeat.weekly wöchentlich
 timerlist.repeatcount Wiederholungen
-timerlist.repeatcount.help1 Anzahl der Timerausführungen
-timerlist.repeatcount.help2 0 für unbegrenzte Anzahl
+timerlist.repeatcount.hint_1 Anzahl der Timerausführungen
+timerlist.repeatcount.hint_2 0 für unbegrenzte Anzahl
 timerlist.save Timer speichern
 timerlist.standby Aktion
 timerlist.standby.off Aufwachen aus Standby
@@ -2792,6 +2798,7 @@ usermenu.title_blue Erweiterungen
 usermenu.title_green Tonwahl
 usermenu.title_red EPG
 usermenu.title_yellow Bildoptionen
+usermenus.head Benutzermenüs
 video_mode_ok Video-Einstellungen OK?
 videomenu.43mode 4:3 Anzeigeverhalten
 videomenu.analog_auto AUTO

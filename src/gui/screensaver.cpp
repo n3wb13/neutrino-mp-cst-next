@@ -280,10 +280,11 @@ void CScreenSaver::paint()
 	}
 	else{
 		if (!scr_clock){
-			scr_clock = new CComponentsFrmClock(1, 1, NULL, "%H:%M:%S", "%H:%M.%S", true); //NI
+			scr_clock = new CComponentsFrmClock(1, 1, NULL, "%H:%M:%S", "%H:%M.%S", true, //NI
+						1, NULL, CC_SHADOW_OFF, COL_BLACK, COL_BLACK);
 			scr_clock->setClockFont(g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_NUMBER]);
 			scr_clock->disableSaveBg();
-			scr_clock->doPaintBg(false);
+			scr_clock->doPaintBg(true);
 		}
 		if (scr_clock->isPainted())
 			scr_clock->Stop();
@@ -293,14 +294,10 @@ void CScreenSaver::paint()
 
 		//check position and size use only possible available screen size
 		int x_cl, y_cl, w_cl, h_cl;
-		scr_clock->getDimensions( &x_cl, &y_cl, &w_cl, &h_cl);
-		bool unchecked = true;
-		while(unchecked){
-			scr_clock->setPosP(uint8_t(rand() % 100),uint8_t(rand() % 100));
-			scr_clock->getDimensions( &x_cl, &y_cl, &w_cl, &h_cl);
-			if (x_cl+w_cl < g_settings.screen_EndX && y_cl+h_cl < g_settings.screen_EndY)
-				unchecked = false;
-		}
+		scr_clock->getDimensions(&x_cl, &y_cl, &w_cl, &h_cl);
+		int x_random = rand() % ((g_settings.screen_EndX - w_cl - g_settings.screen_StartX) + 1) + g_settings.screen_StartX;
+		int y_random = rand() % ((g_settings.screen_EndY - h_cl - g_settings.screen_StartY) + 1) + g_settings.screen_StartY;
+		scr_clock->setPos(x_random, y_random);
 		scr_clock->Start();
 
 		if (g_settings.screensaver_mode == SCR_MODE_CLOCK_COLOR) {

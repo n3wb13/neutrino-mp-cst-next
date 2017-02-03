@@ -57,8 +57,8 @@
 #define NEUTRINO_ICON_BUTTON_8		"8"
 #define NEUTRINO_ICON_BUTTON_9		"9"
 
-#define NEUTRINO_ICON_BUTTON_TOP	"up"
-#define NEUTRINO_ICON_BUTTON_TOP_SMALL	"up_small"
+#define NEUTRINO_ICON_BUTTON_UP	"up"
+#define NEUTRINO_ICON_BUTTON_UP_SMALL	"up_small"
 #define NEUTRINO_ICON_BUTTON_RIGHT	"right"
 #define NEUTRINO_ICON_BUTTON_DOWN	"down"
 #define NEUTRINO_ICON_BUTTON_DOWN_SMALL	"down_small"
@@ -183,6 +183,7 @@
 #define NEUTRINO_ICON_STAR_OFF		"star-off"
 #define NEUTRINO_ICON_TMDB		"tmdb"
 #define NEUTRINO_ICON_IMDB		"imdb"
+#define NEUTRINO_ICON_PICTUREVIEWER	"pictureviewer"
 
 #define DUMMY_ICON			"dummy"
 

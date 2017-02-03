@@ -122,6 +122,7 @@ class CTextBox : public sigc::trackable
 		fb_pixel_t m_old_textBackgroundColor, m_old_textColor;
 
 		bool m_showTextFrame;
+		bool m_bg_painted;
 
 		CBox m_cFrame;
 		CBox m_cFrameTextRel;
@@ -223,7 +224,7 @@ class CTextBox : public sigc::trackable
 		int     	getLines(){return(m_nNrOfLines);}
 
 		/**
-		* Returns maximal width of passed text
+		* Returns width of largest line from passed text
 		* @param[in]	text
 		* 	@li 	exepts type std::string
 		* @param[in]	font
@@ -234,9 +235,10 @@ class CTextBox : public sigc::trackable
 		static int	getMaxLineWidth(const std::string& text, Font* font);
 
 		/**
-		* Returns internal defined maximal line width of an existent CTextBox instance.
+		* Returns internal defined largest line width of an existant CTextBox instance.
 		* 	@return	width of largest line as int
 		* 	@see	static version getMaxLineWidth()
+		* 		setText(), parameter: max_width
 		*/
 		int		getMaxLineWidth()		{return(m_nMaxTextWidth);}
 

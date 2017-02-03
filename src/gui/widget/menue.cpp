@@ -565,6 +565,7 @@ CMenuWidget::CMenuWidget()
 	info_box	= NULL;
 	header 		= NULL;
 	nextShortcut	= 1;
+	x = y		= 0;
 }
 
 CMenuWidget::CMenuWidget(const neutrino_locale_t Name, const std::string & Icon, const int mwidth, const mn_widget_id_t &w_index)
@@ -639,6 +640,7 @@ void CMenuWidget::Init(const std::string &Icon, const int mwidth, const mn_widge
 	nextShortcut	= 1;
 	saveScreen_width = 0;
 	saveScreen_height = 0;
+	x = y		= 0;
 }
 
 void CMenuWidget::move(int xoff, int yoff)
@@ -1091,6 +1093,8 @@ void CMenuWidget::hide()
 			header->kill();
 		if (info_box)
 			info_box->kill();
+		if (details_line)
+			details_line->hide();
 		frameBuffer->paintBackgroundBoxRel(x, y, full_width, full_height + fbutton_height);
 		//paintHint(-1);
 	}
@@ -1212,7 +1216,7 @@ void CMenuWidget::calcSize()
 	//scrollbar width
 	sb_width=0;
 	if(total_pages > 1)
-		sb_width=15;
+		sb_width=SCROLLBAR_WIDTH;
 
 	full_width = /*ConnectLineBox_Width+*/width+sb_width+OFFSET_SHADOW;
 	full_height = height+RADIUS_LARGE+OFFSET_SHADOW*2 /*+hint_height+OFFSET_INTER*/;
@@ -1266,6 +1270,7 @@ void CMenuWidget::paint()
 		header->enableShadow(CC_SHADOW_RIGHT | CC_SHADOW_CORNER_TOP_RIGHT | CC_SHADOW_CORNER_BOTTOM_RIGHT);
 		header->setOffset(10);
 	}
+	header->setCaption(getName());
 	header->setColorAll(COL_FRAME_PLUS_0, COL_MENUHEAD_PLUS_0, COL_SHADOW_PLUS_0);
 	header->setCaptionColor(COL_MENUHEAD_TEXT);
 	header->enableColBodyGradient(g_settings.theme.menu_Head_gradient, COL_MENUCONTENT_PLUS_0);
@@ -1345,8 +1350,7 @@ void CMenuWidget::paintItems()
 	if(total_pages>1)
 	{
 		int item_height=height-(item_start_y-y);
-		frameBuffer->paintBoxRel(x+ width,item_start_y, 15, item_height, COL_SCROLLBAR_PASSIVE_PLUS_0, RADIUS_MIN);
-		frameBuffer->paintBoxRel(x+ width +2, item_start_y+ 2+ current_page*(item_height-4)/total_pages, 11, (item_height-4)/total_pages, COL_SCROLLBAR_ACTIVE_PLUS_0, RADIUS_MIN);
+		paintScrollBar(x+ width, item_start_y, sb_width, item_height, total_pages, current_page);
 		/* background of menu items, paint every time because different items can have
 		 * different height and this might leave artifacts otherwise after changing pages */
 		frameBuffer->paintBoxRel(x,item_start_y, width,item_height, COL_MENUCONTENT_PLUS_0);
@@ -1472,6 +1476,8 @@ void CMenuWidget::paintHint(int pos)
 		if (info_box) {
 			savescreen ? info_box->hide() : info_box->kill();
 			hint_painted = info_box->isPainted();
+			if (details_line)
+				details_line->hide();
 		}
 		return;
 	}

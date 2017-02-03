@@ -30,6 +30,9 @@
 #include <neutrino.h>
 #include "cc_frm_header.h"
 #include <system/debug.h>
+
+#include <sigc++/bind.h>
+
 using namespace std;
 
 //-------------------------------------------------------------------------------------------------------
@@ -93,12 +96,12 @@ void CComponentsHeader::initVarHeader(	const int& x_pos, const int& y_pos, const
 
 	//init header width
 	width 	= width_old = w == 0 ? frameBuffer->getScreenWidth(true) : w;
+	height 	= height_old = h;
 
-	//init header default height
-	height 	= height_old = max(h, g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight());
-
-	cch_size_mode	= CC_HEADER_SIZE_LARGE;
-	initCaptionFont();	//sets cch_font and calculate height if required;
+	cch_font		= NULL;
+	initDefaultFonts();
+	cch_size_mode		= CC_HEADER_SIZE_LARGE;
+	CNeutrinoApp::getInstance()->OnAfterSetupFonts.connect(sigc::mem_fun(this, &CComponentsHeader::resetFont));
 
 	shadow		= shadow_mode;
 	col_frame = col_frame_old 	= color_frame;
@@ -133,6 +136,14 @@ void CComponentsHeader::initVarHeader(	const int& x_pos, const int& y_pos, const
 	cch_cl_sec_format 	= cch_cl_format;
 	cch_cl_enable_run	= false;
 
+	//init slot to ensure paint items after painted background
+	sl_items_repaint = sigc::bind(sigc::mem_fun(*this, &CComponentsHeader::forceItemsPaint), true);
+	OnAfterPaintBg.connect(sl_items_repaint);
+
+	//init slot before re paint of header, paint() is already done
+	sl_form_repaint = sigc::bind(sigc::mem_fun(*this, &CComponentsHeader::kill), col_body, -1, CC_FBDATA_TYPES, false);
+	OnBeforeRePaint.connect(sl_form_repaint);
+
 	addContextButton(buttons);
 	initCCItems();
 	initParent(parent);
@@ -146,6 +157,8 @@ CComponentsHeader::~CComponentsHeader()
 
 void CComponentsHeader::setCaption(const std::string& caption, const int& align_mode, const fb_pixel_t& text_color)
 {
+	if (cch_cl_obj)
+		cch_cl_obj->Stop();
 	cch_text		= caption;
 	cch_caption_align 	= align_mode;
 	cch_col_text 		= text_color;
@@ -153,34 +166,41 @@ void CComponentsHeader::setCaption(const std::string& caption, const int& align_
 
 void CComponentsHeader::setCaption(neutrino_locale_t caption_locale, const int& align_mode, const fb_pixel_t& text_color)
 {
-	if (cch_cl_obj)
-		cch_cl_obj->Stop();
 	setCaption(string(g_Locale->getText(caption_locale)), align_mode, text_color);
 }
 
 void CComponentsHeader::setCaptionFont(Font* font)
 {
-	initCaptionFont(font); //cch_font = font
+	cch_font = font;
 }
 
-void CComponentsHeader::initCaptionFont(Font* font)
+void CComponentsHeader::resetFont()
 {
-	Font *l_font = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE];
-	Font *s_font = g_Font[SNeutrinoSettings::FONT_TYPE_MENU];
+	if (cch_font){
+		dprintf(DEBUG_DEBUG, "\033[33m[CComponentsHeader][%s - %d] reset header font \033[0m\n", __func__, __LINE__);
+		cch_font = NULL;
+	}
+	initDefaultFonts();
+}
 
-	if (font == NULL){
+void CComponentsHeader::initDefaultFonts()
+{
+	l_font 	= g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE];
+	s_font 	= g_Font[SNeutrinoSettings::FONT_TYPE_MENU];
+}
+
+void CComponentsHeader::initCaptionFont()
+{
+	if (cch_font == NULL){
 		cch_font = (cch_size_mode == CC_HEADER_SIZE_LARGE? l_font : s_font);
-
 		//select matching height
 		if (cch_size_mode == CC_HEADER_SIZE_LARGE)
 			height	= std::max(height, l_font->getHeight());
 		else
 			height	= std::min(height, s_font->getHeight());
 	}
-	else{
-		cch_font = font;
+	else
 		height = std::max(height, cch_font->getHeight());
-	}
 }
 
 void CComponentsHeader::setIcon(const char* icon_name)
@@ -227,11 +247,10 @@ void CComponentsHeader::initIcon()
 		cch_icon_obj->doPaintBg(false);
 
 		//set corner mode of icon item
-		int cc_icon_corner_type = corner_type;
+		int cc_icon_corner_type = CORNER_LEFT;
 		if (corner_type == CORNER_TOP_LEFT || corner_type == CORNER_TOP)
 			cc_icon_corner_type = CORNER_TOP_LEFT;
-		else
-			cc_icon_corner_type = CORNER_LEFT;
+
 		cch_icon_obj->setCorner(corner_rad-fr_thickness, cc_icon_corner_type);
 
 		//global set width of icon object
@@ -275,14 +294,14 @@ void CComponentsHeader::addContextButton(const int& buttons)
 		addContextButton(NEUTRINO_ICON_BUTTON_OKAY);
 	if (buttons & CC_BTN_MUTE)
 		addContextButton(NEUTRINO_ICON_BUTTON_MUTE);
-	if (buttons & CC_BTN_TOP)
-		addContextButton(NEUTRINO_ICON_BUTTON_TOP);
+	if (buttons & CC_BTN_UP)
+		addContextButton(NEUTRINO_ICON_BUTTON_UP);
 	if (buttons & CC_BTN_DOWN)
 		addContextButton(NEUTRINO_ICON_BUTTON_DOWN);
-	if (buttons & CC_BTN_RIGHT)
-		addContextButton(NEUTRINO_ICON_BUTTON_RIGHT);
 	if (buttons & CC_BTN_LEFT)
 		addContextButton(NEUTRINO_ICON_BUTTON_LEFT);
+	if (buttons & CC_BTN_RIGHT)
+		addContextButton(NEUTRINO_ICON_BUTTON_RIGHT);
 	if (buttons & CC_BTN_FORWARD)
 		addContextButton(NEUTRINO_ICON_BUTTON_FORWARD);
 	if (buttons & CC_BTN_BACKWARD)
@@ -331,11 +350,10 @@ void CComponentsHeader::initButtons()
 		cch_btn_obj->addIcon(v_cch_btn);
 
 		//set corner mode of button item
-		int cc_btn_corner_type = corner_type;
+		int cc_btn_corner_type = CORNER_RIGHT;
 		if (corner_type == CORNER_TOP_RIGHT || corner_type == CORNER_TOP)
 			cc_btn_corner_type = CORNER_TOP_RIGHT;
-		else
-			cc_btn_corner_type = CORNER_RIGHT;
+
 		cch_btn_obj->setCorner(corner_rad-fr_thickness, cc_btn_corner_type);
 
 		//global adapt height
@@ -355,10 +373,12 @@ void CComponentsHeader::enableClock(bool enable, const char* format, const char*
 {
 	cch_cl_enable	= enable;
 	cch_cl_format 	= format;
+	if (cch_cl_obj && cch_cl_enable)
+		cch_cl_obj->clear();
 	if (sec_format_str)
 		cch_cl_sec_format = sec_format_str;
 	cch_cl_enable_run 	= run;
-	if (!enable){
+	if (!cch_cl_enable){
 		if (cch_cl_obj){
 			cch_cl_enable_run = false;
 			removeCCItem(cch_cl_obj);
@@ -394,7 +414,7 @@ void CComponentsHeader::initClock()
 	//set clock form properties
 	if (cch_cl_obj){
 		cch_cl_obj->setYPos(cch_items_y);
-		cch_cl_obj->setHeight(height - 1); //NI
+		cch_cl_obj->setHeight(height);
 
 		//disallow paint of clock, if disabled and exit method
 		if (!cch_cl_enable){
@@ -408,11 +428,10 @@ void CComponentsHeader::initClock()
 		cch_cl_obj->setClockFormat(cch_cl_format, cch_cl_sec_format);
 
 		//set corner mode of button item
-		int cc_btn_corner_type = corner_type;
+		int cc_btn_corner_type = CORNER_RIGHT;
 		if (corner_type == CORNER_TOP_RIGHT || corner_type == CORNER_TOP)
 			cc_btn_corner_type = CORNER_TOP_RIGHT;
-		else
-			cc_btn_corner_type = CORNER_RIGHT;
+
 		cch_cl_obj->setCorner(corner_rad-fr_thickness, cc_btn_corner_type);
 
 		//global adapt height
@@ -513,11 +532,11 @@ void CComponentsHeader::initCaption()
 
 void CComponentsHeader::initCCItems()
 {
-	//set basic properties
-	Init(x, y, width, height, col_frame, col_body, col_shadow);
-
 	//set size
 	initCaptionFont();
+
+	//set basic properties
+	Init(x, y, width, height, col_frame, col_body, col_shadow);
 
 	//init icon
 	initIcon();
@@ -531,14 +550,14 @@ void CComponentsHeader::initCCItems()
 	//init text
 	initCaption();
 }
-	
+
 void CComponentsHeader::paint(bool do_save_bg)
 {
 	//prepare items
 	initCCItems();
-	
+
 	//paint form contents
-	paintForm(do_save_bg);
+	CComponentsForm::paint(do_save_bg);
 
 	//start clock if enabled
 	if (cch_cl_obj){
@@ -558,3 +577,14 @@ bool CComponentsHeader::enableColBodyGradient(const int& enable_mode, const fb_p
 	return CComponentsForm::enableColBodyGradient(enable_mode, sec_color, dir);
 }
 
+void CComponentsHeader::kill(const fb_pixel_t& bg_color, const int& corner_radius, const int& fblayer_type /*fbdata_type*/, bool disable_clock)
+{
+	if (disable_clock)
+		disableClock();
+
+	int rad = corner_radius;
+	if (corner_radius == -1)
+		rad = corner_rad;
+
+	CComponentsForm::kill(bg_color, rad, fblayer_type);
+}

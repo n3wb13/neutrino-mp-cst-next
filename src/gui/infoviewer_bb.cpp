@@ -89,7 +89,8 @@ CInfoViewerBB::CInfoViewerBB()
 	bbIconInfo[0].h = 0;
 	BBarY = 0;
 	BBarFontY = 0;
-	foot = cabar 		= NULL;
+	foot			= NULL;
+	ca_bar			= NULL;
 	Init();
 }
 
@@ -163,7 +164,7 @@ void CInfoViewerBB::getBBIconInfo()
 	initBBOffset();
 	BBarY 			= g_InfoViewer->BoxEndY + bottom_bar_offset;
 	BBarFontY 		= BBarY + InfoHeightY_Info - (InfoHeightY_Info - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_FOOT]->getHeight()) / 2; /* center in buttonbar */
-	bbIconMinX 		= g_InfoViewer->BoxEndX - 8; //should be 10px, but 2px will be reduced for each icon
+	bbIconMinX 		= g_InfoViewer->BoxEndX - OFFSET_INNER_MID;
 	CNeutrinoApp* neutrino	= CNeutrinoApp::getInstance();
 
 	for (int i = 0; i < CInfoViewerBB::ICON_MAX; i++) {
@@ -206,7 +207,9 @@ void CInfoViewerBB::getBBIconInfo()
 			break;
 		}
 		if (iconView) {
-			bbIconMinX -= w + 2;
+			if (i > 0)
+				bbIconMinX -= OFFSET_INNER_SMALL; //NI
+			bbIconMinX -= w;
 			bbIconInfo[i].x = bbIconMinX;
 			bbIconInfo[i].h = h;
 		}
@@ -218,7 +221,7 @@ void CInfoViewerBB::getBBIconInfo()
 			bbIconMaxH = std::max(bbIconMaxH, bbIconInfo[i].h);
 	}
 	if (g_settings.infobar_show_sysfs_hdd)
-		bbIconMinX -= hddwidth + 2;
+		bbIconMinX -= hddwidth + OFFSET_INNER_MID; //NI
 }
 
 void CInfoViewerBB::getBBButtonInfo()
@@ -482,7 +485,7 @@ void CInfoViewerBB::paintshowButtonBar()
 	g_InfoViewer->sec_timer_id = g_RCInput->addTimer(1*1000*1000, false);
 
 	if (g_settings.infobar_casystem_display < 2)
-		paintCA_bar(0,0);
+		paint_ca_bar();
 
 	paintFoot();
 
@@ -806,7 +809,7 @@ void CInfoViewerBB::paint_ca_icons(int caid, const char *icon, int &icon_space_o
 	} else {
 		icon_space_offset += icon_sizeW[icon_map[caid].first];
 		px = endx - icon_space_offset;
-		icon_space_offset += 4;
+		icon_space_offset += icon_space; //NI
 	}
 
 	if (px) {
@@ -870,13 +873,6 @@ void CInfoViewerBB::showIcon_CA_Status(int notfirst)
 	}
 
 	if(!notfirst) {
-#if 0
-		static int icon_space_offset = 0;
-		if ((g_settings.infobar_casystem_display == 1) && (icon_space_offset)) {
-			paintCA_bar(0,icon_space_offset);
-			icon_space_offset = 0;
-		}
-#endif
 		//NI - check ecm.info
 		acaid = check_ecmInfo();
 		if(acaid == 0){
@@ -924,52 +920,37 @@ void CInfoViewerBB::showIcon_CA_Status(int notfirst)
 	}
 }
 
-void CInfoViewerBB::paintCA_bar(int left, int right)
+void CInfoViewerBB::paint_ca_bar()
 {
 	initBBOffset();
-	int xcnt = (g_InfoViewer->BoxEndX - g_InfoViewer->ChanInfoX - (g_settings.infobar_casystem_frame ? 24 : 0)) / 4;
-	int ycnt = (bottom_bar_offset - (g_settings.infobar_casystem_frame ? 14 : 0)) / 4;
 	int ca_width = g_InfoViewer->BoxEndX - g_InfoViewer->ChanInfoX;
 
-	if (right)
-		right = xcnt - ((right/4)+1);
-	if (left)
-		left =  xcnt - ((left/4)-1);
-
-	if (g_settings.infobar_casystem_frame) { // with highlighted frame
-		if (!right || !left) { // paint full bar
-			// framed ca bar
-			if (cabar == NULL)
-				cabar = new CComponentsShapeSquare(g_InfoViewer->ChanInfoX+11, g_InfoViewer->BoxEndY+1, ca_width-22 , bottom_bar_offset-11 , NULL, CC_SHADOW_ON, COL_INFOBAR_CASYSTEM_PLUS_2, COL_INFOBAR_CASYSTEM_PLUS_0);
-			//cabar->setCorner(RADIUS_SMALL, CORNER_ALL);
-			cabar->enableShadow(CC_SHADOW_ON, 3, true);
-			cabar->setFrameThickness(2);
-
-// 			cabar->paint(CC_SAVE_SCREEN_NO);
-		}else{  //TODO: remove this part, cabar object can do this
-			if (cabar == NULL)
-				cabar = new CComponentsShapeSquare(g_InfoViewer->ChanInfoX, g_InfoViewer->BoxEndY, ca_width , bottom_bar_offset-11, NULL, CC_SHADOW_OFF, COL_INFOBAR_CASYSTEM_PLUS_2);
-			//cabar->setCorner(RADIUS_SMALL, CORNER_ALL);
-			cabar->disableShadow();
-			cabar->setFrameThickness(2);
-			cabar->setColorBody(COL_INFOBAR_CASYSTEM_PLUS_0);
-		}
-		cabar->setFrameThickness(2);
-		cabar->setCorner(RADIUS_SMALL, CORNER_ALL);
-		cabar->paint(CC_SAVE_SCREEN_NO);
+	if (g_settings.infobar_casystem_frame)
+	{
+		if (ca_bar == NULL)
+			ca_bar = new CComponentsShapeSquare(g_InfoViewer->ChanInfoX + OFFSET_INNER_MID, g_InfoViewer->BoxEndY, ca_width - 2*OFFSET_INNER_MID, bottom_bar_offset - OFFSET_INNER_MID, NULL, CC_SHADOW_ON, COL_INFOBAR_CASYSTEM_PLUS_2, COL_INFOBAR_CASYSTEM_PLUS_0);
+		ca_bar->enableShadow(CC_SHADOW_ON, OFFSET_SHADOW/2, true);
+		ca_bar->setFrameThickness(1); //NI
+		ca_bar->setCorner(RADIUS_SMALL, CORNER_ALL);
+		ca_bar->paint(CC_SAVE_SCREEN_NO);
 	}
 	else
+	{
 		paintBoxRel(g_InfoViewer->ChanInfoX, g_InfoViewer->BoxEndY, ca_width , bottom_bar_offset, COL_INFOBAR_CASYSTEM_PLUS_0);
-#if 1
-	if (!g_settings.infobar_casystem_dotmatrix) //don't show dotmatrix
-		return;
+	}
+//NI
+#if 0
+	if (g_settings.infobar_casystem_dotmatrix)
+	{
+		int xcnt = (g_InfoViewer->BoxEndX - g_InfoViewer->ChanInfoX - (g_settings.infobar_casystem_frame ? 24 : 0)) / 4;
+		int ycnt = (bottom_bar_offset - (g_settings.infobar_casystem_frame ? 14 : 0)) / 4;
 
-	if (left)
-		left -= 1;
-
-	for (int i = 0  + right; i < xcnt - left; i++) {
-		for (int j = 0; j < ycnt; j++) {
-			frameBuffer->paintBoxRel((g_InfoViewer->ChanInfoX + (g_settings.infobar_casystem_frame ? 14 : 2)) + i*4, g_InfoViewer->BoxEndY + (g_settings.infobar_casystem_frame ? 4 : 2) + j*4, 2, 2, COL_INFOBAR_PLUS_1);
+		for (int i = 0; i < xcnt; i++)
+		{
+			for (int j = 0; j < ycnt; j++)
+			{
+				frameBuffer->paintBoxRel((g_InfoViewer->ChanInfoX + (g_settings.infobar_casystem_frame ? 14 : 2)) + i*4, g_InfoViewer->BoxEndY + (g_settings.infobar_casystem_frame ? 4 : 2) + j*4, 2, 2, COL_INFOBAR_PLUS_1);
+			}
 		}
 	}
 #endif
@@ -1007,14 +988,14 @@ void CInfoViewerBB::ResetModules()
 	if (foot){
 		delete foot; foot = NULL;
 	}
-	if (cabar){
-		delete cabar; cabar = NULL;
+	if (ca_bar){
+		delete ca_bar; ca_bar = NULL;
 	}
 }
 
 void CInfoViewerBB::initBBOffset()
 {
-	bottom_bar_offset = (g_settings.infobar_casystem_display < 2) ? (g_settings.infobar_casystem_frame ? 36 : 22) : 0;
+	bottom_bar_offset = (g_settings.infobar_casystem_display < 2) ? (g_settings.infobar_casystem_frame ? 38 : 24) : 0; //NI
 }
 
 void* CInfoViewerBB::scrambledThread(void *arg)
@@ -1068,7 +1049,7 @@ void* CInfoViewerBB::Thread_paint_cam_icons(void)
 	int emu_pic_startx = g_InfoViewer->ChanInfoX + (g_settings.infobar_casystem_frame ? 20 : 10);
 	int py = g_InfoViewer->BoxEndY + (g_settings.infobar_casystem_frame ? 4 : 2);
 	const char *icon_name[] = {"mgcamd","doscam","oscam","osemu","newcs","gbox"};
-	static int icon_space[] = {14,14,14,14,14,14};
+	static int icon_space[] = {10,10,10,10,10,10};
 	int icon_sizeH = 0;
 	int icon_sizeW = 0;
 	bool useCI = CCamManager::getInstance()->getUseCI();

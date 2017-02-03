@@ -335,7 +335,8 @@ void CComponentsForm::exchangeCCItem(CComponentsItem* item_a, CComponentsItem* i
 void CComponentsForm::paintForm(bool do_save_bg)
 {
 	//paint body
-	paintInit(do_save_bg);
+	if (!is_painted || force_paint_bg)
+		paintInit(do_save_bg);
 
 	//paint
 	paintCCItems();
@@ -343,6 +344,9 @@ void CComponentsForm::paintForm(bool do_save_bg)
 
 void CComponentsForm::paint(bool do_save_bg)
 {
+	if(is_painted)
+		OnBeforeRePaint();
+	OnBeforePaint();
 	paintForm(do_save_bg);
 }
 
@@ -375,9 +379,9 @@ void CComponentsForm::paintCCItems()
 
 	//init and handle scrollbar
 	getPageCount();
-	int y_sb = this_y+1;
+	int y_sb = this_y;
 	int x_sb = this_x + width - w_sb;
-	int h_sb = height-2;
+	int h_sb = height;
 	if (sb == NULL){
 		sb = new CComponentsScrollBar(x_sb, y_sb, w_sb, h_sb);
 	}else{
@@ -519,23 +523,7 @@ void CComponentsForm::paintCCItems()
 		cc_item->allowPaint(item_visible);
 	}
 }
-#if 0
-void CComponentsForm::hide()
-{
-	// hack: ensure hiding of minitv during hide of forms and inherited classes,
-	// because the handling of minitv items are different to other item types
-	// and need an explizit call of hide()
-	for(size_t i=0; i<v_cc_items.size(); i++) {
-		if (v_cc_items[i]->getItemType() == CC_ITEMTYPE_PIP){
-			v_cc_items[i]->kill();
-			break;
-		}
-	}
 
-	//hide body
-	CComponents::hide();
-}
-#endif
 //erase or paint over rendered objects
 void CComponentsForm::killCCItems(const fb_pixel_t& bg_color, bool ignore_parent)
 {
@@ -636,9 +624,9 @@ void CComponentsForm::ScrollPage(int direction, bool do_paint)
 	int target_page_id = (int)page_count - 1;
 	int target_page = (int)cur_page;
 	
-	if (direction == SCROLL_P_DOWN)
+	if (direction == SCROLL_P_UP)
 		target_page = target_page+1 > target_page_id ? 0 : target_page+1;	
-	else if	(direction == SCROLL_P_UP)
+	else if	(direction == SCROLL_P_DOWN)
 		target_page = target_page-1 < 0 ? target_page_id : target_page-1;
 
 	if (do_paint)
@@ -691,4 +679,21 @@ bool CComponentsForm::enableColBodyGradient(const int& enable_mode, const fb_pix
 		return true;
 	}
 	return false;
+}
+
+void CComponentsForm::forceItemsPaint(bool force)
+{
+	for (size_t i = 0; i < v_cc_items.size(); i++){
+		dprintf(DEBUG_DEBUG, "\033[33m[CComponentsForm]    [%s - %d] found item type = [%d] \033[0m\n", __func__, __LINE__, v_cc_items[i]->getItemType());
+		if (v_cc_items[i]->getItemType() == CC_ITEMTYPE_TEXT){
+			CComponentsText* text = static_cast <CComponentsText*>(v_cc_items[i]);
+			text->forceTextPaint(force);
+			dprintf(DEBUG_DEBUG, "\033[33m[CComponentsForm]    [%s - %d] force repaint of item type CC_ITEMTYPE_TEXT [%u] content [%s]\033[0m\n", __func__, __LINE__, i, text->getText().c_str());
+		}
+		if (v_cc_items[i]->getItemType() == CC_ITEMTYPE_LABEL){
+			CComponentsLabel* label = static_cast <CComponentsLabel*>(v_cc_items[i]);
+			label ->forceTextPaint(force);
+			dprintf(DEBUG_DEBUG, "\033[33m[CComponentsForm]    [%s - %d] force repaint of item type CC_ITEMTYPE_LABEL [%u] content [%s]\033[0m\n", __func__, __LINE__, i, label->getText().c_str());
+		}
+	}
 }

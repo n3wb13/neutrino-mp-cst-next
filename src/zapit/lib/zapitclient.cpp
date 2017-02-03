@@ -648,7 +648,6 @@ void CZapitClient::lockRc(const bool b)
 
 	close_connection();
 }
-
 #if 0 
 //never used
 delivery_system_t CZapitClient::getDeliverySystem(void)

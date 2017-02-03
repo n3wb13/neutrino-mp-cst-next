@@ -33,7 +33,11 @@
 
 #include <neutrino.h>
 #include <gui/infoclock.h>
+#include <gui/timeosd.h>
 #include <driver/neutrinofonts.h>
+#include <system/debug.h>
+
+extern CTimeOSD *FileTimeOSD;
 
 using namespace std;
 
@@ -46,8 +50,8 @@ CVolumeBar::CVolumeBar()
 void CVolumeBar::initVarVolumeBar()
 {
 	col_body 	= COL_MENUCONTENT_PLUS_0;
-
-	vb_item_offset 	= 4;
+	corner_rad 	= CORNER_RADIUS_MID;
+	vb_item_offset 	= OFFSET_INNER_SMALL;
 	height 		= g_settings.volume_size; //default height
 
 	//assume volume value as pointer to global setting
@@ -83,14 +87,14 @@ void CVolumeBar::initVolumeBarSize()
 	cvh->getDimensions(&x, &y, &sw, &sh, &vb_icon_w, &vb_digit_w);
 	cvh->getVolBarDimensions(&y, &height);
 
-	vb_digit_w += cornerRad()/2;
+	//vb_digit_w += corner_rad/2;
 
 	//scale
 	vb_pbw 		= 200;
 	vb_pbh 		= height-4*vb_item_offset;
 
 	//result for width
-	width = (vb_icon_w + vb_pbw + vb_digit_w) + 4*vb_item_offset;
+	width = (vb_icon_w + vb_pbw + vb_digit_w) + 4*vb_item_offset + corner_rad/2;
 
 	//adapt x-pos
 	vb_pbx 		= vb_item_offset + vb_icon_w + vb_item_offset;
@@ -133,7 +137,7 @@ void CVolumeBar::initVolumeBarPosition()
 			break;
 		}
 		case VOLUMEBAR_POS_TOP_LEFT:
-			if (CMoviePlayerGui::getInstance().osdTimeVisible())
+			if (FileTimeOSD->IsVisible())
 				y = clock_y + clock_height + v_spacer + OFFSET_SHADOW;
 			break;
 		case VOLUMEBAR_POS_BOTTOM_LEFT:
@@ -173,19 +177,25 @@ void CVolumeBar::initVolumeBarItems()
 //init current icon object
 void CVolumeBar::initVolumeBarIcon()
 {
-	vb_icon = new CComponentsPicture(vb_icon_x, CC_CENTERED, vb_icon_w, height, NEUTRINO_ICON_VOLUME);
+	if (!vb_icon){
+		vb_icon = new CComponentsPicture(vb_icon_x, CC_CENTERED, vb_icon_w, height, NEUTRINO_ICON_VOLUME);
+		//add icon to container
+		addCCItem(vb_icon);
+	}
 
+	vb_icon->setDimensionsAll(vb_icon_x, CC_CENTERED, vb_icon_w, height);
 	vb_icon->setColorBody(col_body);
-	vb_icon->setCorner(cornerRad(), CORNER_LEFT);
-
-	//add icon to container
-	addCCItem(vb_icon);
+	vb_icon->setCorner(corner_rad, CORNER_LEFT);
 }
 
 //create new scale
 void CVolumeBar::initVolumeBarScale()
 {
-	vb_pb = new CProgressBar();
+	if (!vb_pb){
+		vb_pb = new CProgressBar();
+		//add progressbar to container
+		addCCItem(vb_pb);
+	}
 
 	vb_pb->setType(CProgressBar::PB_REDRIGHT);
 	vb_pb->setRgb(85, 75, 100);
@@ -193,41 +203,32 @@ void CVolumeBar::initVolumeBarScale()
 	vb_pb->setProgress(vb_pbx, vb_pby, vb_pbw, vb_pbh, *vb_vol, 100);
 
 	//NI
-	if (g_settings.progressbar_design == CProgressBar::PB_GRAPHIC)
+	if (g_settings.theme.progressbar_design == CProgressBar::PB_GRAPHIC)
 		vb_pb->setGraphic("volumebar");
-
-	//add progressbar to container
-	addCCItem(vb_pb);
 }
 
 //set digit text with current volume value
 void CVolumeBar::initVolumeBarDigitValue()
 {
+	vb_digit->kill(col_body);
 	vb_digit->setText(*vb_vol ,vb_digit_mode, *(CVolumeHelper::getInstance()->vb_font));
 }
 
 //create digit
 void CVolumeBar::initVolumeBarDigit()
 {
-	vb_digit = new CComponentsLabel();
+	if (!vb_digit)
+		vb_digit = new CComponentsLabel(this);
 
 	vb_digit->setDimensionsAll(vb_digit_x, 0, vb_digit_w, height);
 	vb_digit->setTextColor(COL_MENUCONTENT_TEXT);
-	vb_digit->setCorner(cornerRad(), CORNER_RIGHT);
+	vb_digit->setCorner(corner_rad, CORNER_RIGHT);
 	initVolumeBarDigitValue();
-
-	//add digit label to container
-	addCCItem(vb_digit);
 }
 
 //refresh and paint digit
 void CVolumeBar::paintVolumeBarDigit()
 {
-	// digits
-	CTextBox* ctb = vb_digit->getCTextBoxObject();
-	if (ctb)
-		ctb->setFontUseDigitHeight();
-
 	// paint digit
 	vb_digit->paint(CC_SAVE_SCREEN_NO);
 }
@@ -252,6 +253,18 @@ void CVolumeBar::paintVolScale()
 	vb_pb->paint(CC_SAVE_SCREEN_NO);
 }
 
+void CVolumeBar::paint(bool do_save_bg)
+{
+	//prepare items
+	initVolumeBarItems();
+
+	//paint form contents
+	if (!is_painted)
+		CComponentsForm::paint(do_save_bg);
+	else
+		repaintVolScale();
+}
+
 
 
 // CVolumeHelper ####################################################################################################
@@ -265,7 +278,21 @@ CVolumeHelper::CVolumeHelper()
 
 	frameBuffer = CFrameBuffer::getInstance();
 
+	CNeutrinoApp::getInstance()->OnAfterSetupFonts.connect(sigc::mem_fun(this, &CVolumeHelper::resetFont));
+
 	Init();
+}
+
+void CVolumeHelper::resetFont()
+{
+	if (vb_font){
+		vb_font		= NULL;
+		dprintf(DEBUG_INFO, "\033[33m[CVolumeHelper][%s - %d] reset vb font \033[0m\n", __func__, __LINE__);
+	}
+	if (clock_font){
+		clock_font	= NULL;
+		dprintf(DEBUG_INFO, "\033[33m[CVolumeHelper][%s - %d] reset clock font \033[0m\n", __func__, __LINE__);
+	}
 }
 
 void CVolumeHelper::Init(Font* font)
@@ -283,17 +310,14 @@ void CVolumeHelper::Init(Font* font)
 
 void CVolumeHelper::initInfoClock(Font* font)
 {
-	if (clock_font == NULL){
-		if (font == NULL) {
-			clock_font = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE];
-		}
-		else
-			clock_font = font;
+	if (font == NULL) {
+		int dx = 0;
+		int dy = g_settings.infoClockFontSize;
+		clock_font = *CNeutrinoFonts::getInstance()->getDynFont(dx, dy, g_settings.infoClockSeconds ? "%H:%M:%S" : "%H:%M");
 	}
-	else {
-		if (font != NULL)
-			clock_font = font;
-	}
+	else
+		clock_font = font;
+
 	digit_offset = (clock_font)->getDigitOffset();
 	digit_h      = (clock_font)->getDigitHeight();
 	int t1       = (clock_font)->getMaxDigitWidth();

@@ -145,7 +145,7 @@ void CComponentsWindow::initVarWindow(	const int& x_pos, const int& y_pos, const
 	ccw_right_sidebar= NULL;	
 	ccw_body	= NULL;
 	ccw_footer	= NULL;
-	ccw_button_font	= g_Font[SNeutrinoSettings::FONT_TYPE_MENU_FOOT];
+	ccw_button_font	= g_Font[SNeutrinoSettings::FONT_TYPE_BUTTON_TEXT];
 
 	ccw_buttons	= 0; //no header buttons
 	ccw_show_footer = true;
@@ -157,7 +157,7 @@ void CComponentsWindow::initVarWindow(	const int& x_pos, const int& y_pos, const
 	ccw_col_head 	= COL_MENUHEAD_PLUS_0;
 	ccw_col_head_text = COL_MENUHEAD_TEXT;
 	ccw_col_footer	= COL_MENUFOOT_PLUS_0;
-
+	cc_parent = NULL;
 	page_scroll_mode = PG_SCROLL_M_OFF; //permanent disabled here, only in body used!
 
 	initCCWItems();

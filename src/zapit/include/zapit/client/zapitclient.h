@@ -376,6 +376,9 @@ class CZapitClient:public CBasicClient
 	delivery_system_t getDeliverySystem(void);
 	void lockRc(const bool mute);
 
+	/* Lock remote control */
+	void lockRc(const bool mute);
+
 	void zaptoNvodSubService(const int num);
 
 	/* send diseqc 1.2 motor command */

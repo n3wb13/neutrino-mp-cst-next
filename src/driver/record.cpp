@@ -1397,7 +1397,7 @@ int CRecordManager::handleMsg(const neutrino_msg_t msg, neutrino_msg_data_t data
 						DisplayErrorMessage(g_Locale->getText(LOCALE_STREAMING_OVERFLOW));
 					} else if (g_settings.recording_slow_warning && warn_display) {
 						warn_display = false;
-						DisplayErrorMessage(g_Locale->getText(LOCALE_STREAMING_SLOW));
+						ShowHint(LOCALE_MESSAGEBOX_INFO, LOCALE_STREAMING_SLOW, 700, 60, NEUTRINO_ICON_ERROR, NULL, CComponentsHeader::CC_BTN_EXIT);
 					}
 				}
 				return messages_return::handled;
@@ -1493,7 +1493,7 @@ int CRecordManager::exec(CMenuTarget* parent, const std::string & actionKey )
 			inst->GetRecordString(title, duration);
 			title += duration;
 			tostart = (ShowMsg(LOCALE_RECORDING_IS_RUNNING, title.c_str(),
-						CMsgBox::mbrYes, CMsgBox::mbYes | CMsgBox::mbNo, NULL, 450, 30) == CMsgBox::mbrYes);
+						CMsgBox::mbrYes, CMsgBox::mbYes | CMsgBox::mbNo, NULL, 450, DEFAULT_TIMEOUT) == CMsgBox::mbrYes);
 		}
 		//NI
 		if (g_settings.recording_startstop_msg) {
@@ -2218,7 +2218,7 @@ bool CStreamRec::Open(CZapitChannel * channel)
 		return false;
 
 	std::string pretty_name,headers;
-	if (!CMoviePlayerGui::getInstance(true).getLiveUrl(channel->getChannelID(), channel->getUrl(), channel->getScriptName(), url, pretty_name, recMovieInfo->epgInfo1, recMovieInfo->epgInfo2,headers)) {
+	if (!CMoviePlayerGui::getInstance(true).getLiveUrl(channel->getUrl(), channel->getScriptName(), url, pretty_name, recMovieInfo->epgInfo1, recMovieInfo->epgInfo2,headers)) {
 		printf("%s: getLiveUrl() [%s] failed!\n", __FUNCTION__, url.c_str());
 		return false;
 	}

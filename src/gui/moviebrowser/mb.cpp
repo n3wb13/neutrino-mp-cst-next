@@ -270,6 +270,9 @@ CMovieBrowser::~CMovieBrowser()
 
 	if (m_movieCover)
 		delete m_movieCover;
+
+	if (m_header)
+		delete m_header;
 }
 
 void CMovieBrowser::clearListLines()
@@ -337,6 +340,7 @@ void CMovieBrowser::init(void)
 	m_pcInfo1 = NULL;
 	m_pcInfo2 = NULL;
 	m_pcFilter = NULL;
+	m_header = NULL;
 	m_windowFocus = MB_FOCUS_BROWSER;
 
 	m_textTitle = g_Locale->getText(LOCALE_MOVIEBROWSER_HEAD);
@@ -615,8 +619,20 @@ bool CMovieBrowser::loadSettings(MB_SETTINGS* settings)
 	settings->sorting.direction = (MB_DIRECTION)configfile.getInt32("mb_sorting_direction", MB_DIRECTION_UP);
 
 	settings->filter.item = (MB_INFO_ITEM)configfile.getInt32("mb_filter_item", MB_INFO_MAX_NUMBER);
-	settings->filter.optionString = configfile.getString("mb_filter_optionString", "");
+	settings->filter.optionString = configfile.getString("mb_filter_optionString", g_Locale->getText(LOCALE_OPTIONS_OFF));
 	settings->filter.optionVar = configfile.getInt32("mb_filter_optionVar", 0);
+
+	if (settings->filter.item == MB_INFO_FILEPATH)
+	{
+		struct stat info;
+		if (!(stat(settings->filter.optionString.c_str(), &info) == 0 && S_ISDIR(info.st_mode)))
+		{
+			//reset filter if directory not exists
+			settings->filter.item = MB_INFO_MAX_NUMBER;
+			settings->filter.optionString = g_Locale->getText(LOCALE_OPTIONS_OFF);
+			settings->filter.optionVar = 0;
+		}
+	}
 
 	settings->parentalLockAge = (MI_PARENTAL_LOCKAGE)configfile.getInt32("mb_parentalLockAge", MI_PARENTAL_OVER18);
 	settings->parentalLock = (MB_PARENTAL_LOCK)configfile.getInt32("mb_parentalLock", MB_PARENTAL_LOCK_ACTIVE);
@@ -1166,10 +1182,11 @@ int CMovieBrowser::exec(const char* path)
 void CMovieBrowser::hide(void)
 {
 	//TRACE("[mb]->%s\n", __func__);
-	if (m_channelLogo)
-	{
-		delete m_channelLogo;
-		m_channelLogo = NULL;
+	if (m_channelLogo){
+		delete m_channelLogo; m_channelLogo = NULL;
+	}
+	if (m_header)	{
+		delete m_header; m_header = NULL;
 	}
 	old_EpgId = 0;
 	framebuffer->paintBackground();
@@ -1410,7 +1427,7 @@ void CMovieBrowser::refreshChannelLogo(void)
 
 		int x = m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX + m_cBoxFrameTitleRel.iWidth - m_channelLogo->getWidth() - OFFSET_INNER_MID;
 		int y = m_cBoxFrame.iY + m_cBoxFrameTitleRel.iY + (m_cBoxFrameTitleRel.iHeight - m_channelLogo->getHeight())/2;
-		m_channelLogo->setXPos(x - pb_hdd_offset);
+		m_channelLogo->setXPos(x - pb_hdd_offset - m_header->getContextBtnObject()->getWidth());
 		m_channelLogo->setYPos(y);
 		m_channelLogo->hide();
 		m_channelLogo->paint();
@@ -1643,7 +1660,7 @@ void CMovieBrowser::info_hdd_level(bool /* paint_hdd */)
 	if (g_settings.infobar_show_sysfs_hdd) {
 		const short pbw = 100;
 		const short border = m_cBoxFrameTitleRel.iHeight/4;
-		CProgressBar pb(m_cBoxFrame.iX+ m_cBoxFrameFootRel.iWidth - pbw - border, m_cBoxFrame.iY+m_cBoxFrameTitleRel.iY + border, pbw, m_cBoxFrameTitleRel.iHeight/2);
+		CProgressBar pb(m_cBoxFrame.iX+ m_cBoxFrameFootRel.iWidth - m_header->getContextBtnObject()->getWidth() - pbw - border, m_cBoxFrame.iY+m_cBoxFrameTitleRel.iY + border, pbw, m_cBoxFrameTitleRel.iHeight/2);
 		pb.setType(CProgressBar::PB_REDRIGHT);
 		pb.setValues(cHddStat::getInstance()->getPercent(), 100);
 		pb.paint(false);
@@ -1930,9 +1947,11 @@ void CMovieBrowser::refreshTitle(void)
 	int w = m_cBoxFrameTitleRel.iWidth;
 	int h = m_cBoxFrameTitleRel.iHeight;
 
-	CComponentsHeader header(x, y, w, h, title.c_str(), icon);
-	header.paint(CC_SAVE_SCREEN_NO);
-	newHeader = header.isPainted();
+	if (!m_header){
+		m_header = new CComponentsHeader(x, y, w, h, title.c_str(), icon, CComponentsHeader::CC_BTN_HELP);
+	}
+	m_header->paint(CC_SAVE_SCREEN_NO);
+	newHeader = m_header->isPainted();
 
 	info_hdd_level(true);
 }

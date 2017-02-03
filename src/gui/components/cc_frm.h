@@ -65,6 +65,13 @@ class CComponentsForm : public CComponentsItem
 					const fb_pixel_t& color_body,
 					const fb_pixel_t& color_shadow);
 
+		///force repaint of all possible text items
+		void forceItemsPaint(bool force);
+		///slot for background paint event, reserved for forceItemsPaint()
+		sigc::slot0<void> sl_items_repaint;
+		///slot for repaint event, reserved for actions before repaint if paint() already was done.
+		sigc::slot0<void> sl_form_repaint;
+
 	public:
 		CComponentsForm(	const int x_pos = 0, const int y_pos = 0, const int w = 800, const int h = 600,
 					CComponentsForm *parent = NULL,

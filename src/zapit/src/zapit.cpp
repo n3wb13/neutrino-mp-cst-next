@@ -529,6 +529,11 @@ bool CZapit::ZapIt(const t_channel_id channel_id, bool forupdate, bool startplay
 
 	if (IS_WEBTV(newchannel->getChannelID()) && !newchannel->getUrl().empty()) {
 		dvbsub_stop();
+		if (current_channel->getChannelID() == newchannel->getChannelID() && !newchannel->getScriptName().empty()){
+			INFO("[zapit] stop rezap to channel %s id %" PRIx64 ")", newchannel->getName().c_str(), newchannel->getChannelID());
+			return true;
+		}
+
 		if (!IS_WEBTV(live_channel_id))
 			CCamManager::getInstance()->Stop(live_channel_id, CCamManager::PLAY);
 
@@ -1950,9 +1955,9 @@ bool CZapit::ParseCommand(CBasicMessage::Header &rmsg, int connfd)
 		CBasicServer::receive_data(connfd, &msgBoolean, sizeof(msgBoolean));
 		extern CRCInput *g_RCInput;
 		if (msgBoolean.truefalse)
-			g_RCInput->stopInput();
+			g_RCInput->stopInput(true);
 		else
-			g_RCInput->restartInput();
+			g_RCInput->restartInput(true);
 		break;
 	}
 

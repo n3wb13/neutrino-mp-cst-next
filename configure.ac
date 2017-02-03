@@ -1,4 +1,4 @@
-AC_INIT(NI-Neutrino,3.20.0)
+AC_INIT(NI-Neutrino,3.30.0)
 AM_INIT_AUTOMAKE([1.0.1 nostdinc])
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES])
 
@@ -91,6 +91,19 @@ AM_CONDITIONAL(USE_TREMOR, test "$TREMOR" = "yes")
 # TUXBOX_APPS_LIB_PKGCONFIG(OPENSSL,openssl)
 TUXBOX_APPS_LIB_PKGCONFIG(CURL,libcurl)
 TUXBOX_APPS_LIB_PKGCONFIG(FREETYPE,freetype2)
+CPPFLAGS+=" $(freetype-config --cflags)"
+AC_MSG_CHECKING([whether FreeType version is 2.5.0 or higher])
+	AC_TRY_CPP([
+		#include <ft2build.h>
+		#include FT_FREETYPE_H
+		#if FREETYPE_MAJOR < 2 || (FREETYPE_MAJOR == 2 && FREETYPE_MINOR < 5)
+		#error Freetype version too low.
+		#endif
+		],
+		[AC_MSG_RESULT(yes)],
+		[AC_MSG_ERROR([Need FreeType library version 2.5.0 or higher])
+	])
+
 # fallback to curl-config (which is ugly for cross-compilation)
 if test -z "$CURL_LIBS" -a -z "$CURL_CFLAGS"; then
 	TUXBOX_APPS_LIB_CONFIG(CURL,curl-config)
@@ -305,67 +318,85 @@ AC_SUBST(BLURAY_LIBS)
 
 AC_OUTPUT([
 Makefile
+data/Makefile
+data/fonts/Makefile
+data/icons/Makefile
+data/icons/buttons/Makefile
+data/icons/filetypes/Makefile
+data/icons/headers/Makefile
+data/icons/hints/Makefile
+data/icons/locale/Makefile
+data/icons/movieplayer/Makefile
+data/icons/radar/Makefile
+data/icons/slider/Makefile
+data/icons/status/Makefile
+data/icons/status/ca/Makefile
+data/icons/status/channel/Makefile
+data/icons/status/info/Makefile
+data/icons/status/markers/Makefile
+data/icons/status/progress/Makefile
+data/icons/status/various/Makefile
+data/icons/various/Makefile
+data/inetradio/Makefile
+data/initial/Makefile
+data/iso-codes/Makefile
+data/lcd/Makefile
+data/lcd/clock/Makefile
+data/lcd/icons/Makefile
+data/license/Makefile
+data/locale/Makefile
+data/neutrino-scripts/Makefile
+data/pictures/Makefile
+data/pictures/backgrounds/Makefile
+data/pictures/screensaver/Makefile
+data/scripts/Makefile
+data/themes/Makefile
+data/y-web/Makefile
+data/y-web/images/Makefile
+data/y-web/info/Makefile
+data/y-web/jquery/Makefile
+data/y-web/languages/Makefile
+data/y-web/scripts/Makefile
+data/y-web/styles/Makefile
 lib/Makefile
-lib/libconfigfile/Makefile
 lib/connection/Makefile
+lib/jsoncpp/Makefile
+lib/libconfigfile/Makefile
+lib/libdvbsub/Makefile
 lib/libeventserver/Makefile
+lib/libiw/Makefile
 lib/libmd5sum/Makefile
 lib/libnet/Makefile
-lib/xmltree/Makefile
-lib/jsoncpp/Makefile
+lib/libtuxtxt/Makefile
+lib/libupnpclient/Makefile
+lib/luaclient/Makefile
 lib/sectionsdclient/Makefile
 lib/timerdclient/Makefile
-lib/libtuxtxt/Makefile
-lib/libdvbsub/Makefile
-lib/libupnpclient/Makefile
-lib/libiw/Makefile
-lib/luaclient/Makefile
-src/lcddisplay/Makefile
-src/nhttpd/Makefile
-src/nhttpd/web/Makefile
-src/nhttpd/web/images/Makefile
-src/nhttpd/web/scripts/Makefile
-src/nhttpd/web/languages/Makefile
-src/nhttpd/web/styles/Makefile
-src/nhttpd/web/jquery/Makefile
-src/nhttpd/web/info/Makefile
-src/nhttpd/tuxboxapi/Makefile
-src/nhttpd/yhttpd_core/Makefile
-src/nhttpd/yhttpd_mods/Makefile
-src/nhttpd/nhttpd.conf
+lib/xmltree/Makefile
 src/Makefile
 src/daemonc/Makefile
-src/driver/pictureviewer/Makefile
-src/driver/audiodec/Makefile
 src/driver/Makefile
+src/driver/audiodec/Makefile
+src/driver/pictureviewer/Makefile
+src/eitd/Makefile
 src/gui/Makefile
 src/gui/bedit/Makefile
 src/gui/components/Makefile
 src/gui/lua/Makefile
 src/gui/moviebrowser/Makefile
 src/gui/widget/Makefile
+src/lcddisplay/Makefile
+src/nhttpd/Makefile
+src/nhttpd/nhttpd.conf
+src/nhttpd/tuxboxapi/Makefile
+src/nhttpd/yhttpd_core/Makefile
+src/nhttpd/yhttpd_mods/Makefile
 src/system/Makefile
 src/system/mtdutils/Makefile
 src/system/mtdutils/lib/Makefile
-data/Makefile
-data/fonts/Makefile
-data/icons/Makefile
-data/icons/screensaver/Makefile
-data/inetradio/Makefile
-data/initial/Makefile
-data/iso-codes/Makefile
-data/lcd/Makefile
-data/lcd/icons/Makefile
-data/lcd/clock/Makefile
-data/license/Makefile
-data/locale/Makefile
-data/neutrino-scripts/Makefile
-data/scripts/Makefile
-data/themes/Makefile
-src/eitd/Makefile
 src/timerd/Makefile
 src/zapit/Makefile
+src/zapit/data/Makefile
 src/zapit/lib/Makefile
 src/zapit/src/Makefile
-src/zapit/data/Makefile
 ])
