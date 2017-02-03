@@ -327,32 +327,6 @@ bool CUserMenu::showUserMenu(neutrino_msg_t msg)
 			menu_item->setHint(NEUTRINO_ICON_HINT_STREAMINFO, LOCALE_MENU_HINT_STREAMINFO);
 			break;
 		}
-		case SNeutrinoSettings::ITEM_GAMES:
-		{
-			keyhelper.get(&key,&icon);
-			menu_item = new CMenuDForwarder(LOCALE_MAINMENU_GAMES, g_PluginList->hasPlugin(CPlugins::P_TYPE_GAME), NULL, new CPluginList(LOCALE_MAINMENU_GAMES,CPlugins::P_TYPE_GAME), "-1", key, icon );
-			menu_item->setHint(NEUTRINO_ICON_HINT_GAMES, LOCALE_MENU_HINT_GAMES);
-			break;
-		}
-		case SNeutrinoSettings::ITEM_TOOLS:
-		{
-			keyhelper.get(&key,&icon);
-			menu_item = new CMenuDForwarder(LOCALE_MAINMENU_TOOLS, g_PluginList->hasPlugin(CPlugins::P_TYPE_TOOL), NULL, new CPluginList(LOCALE_MAINMENU_TOOLS,CPlugins::P_TYPE_TOOL), "-1", key, icon );
-			// FIXME menu_item->setHint("", NONEXISTANT_LOCALE);
-			break;
-		}
-		case SNeutrinoSettings::ITEM_SCRIPTS:
-		{
-			keyhelper.get(&key,&icon);
-			menu_item = new CMenuDForwarder(LOCALE_MAINMENU_SCRIPTS, g_PluginList->hasPlugin(CPlugins::P_TYPE_SCRIPT), NULL, new CPluginList(LOCALE_MAINMENU_SCRIPTS,CPlugins::P_TYPE_SCRIPT), "-1", key, icon );
-			menu_item->setHint(NEUTRINO_ICON_HINT_SCRIPTS, LOCALE_MENU_HINT_SCRIPTS);
-			break;
-		}
-		case SNeutrinoSettings::ITEM_LUA:
-		{
-			keyhelper.get(&key,&icon);
-			menu_item = new CMenuDForwarder(LOCALE_MAINMENU_LUA, g_PluginList->hasPlugin(CPlugins::P_TYPE_LUA), NULL, new CPluginList(LOCALE_MAINMENU_LUA,CPlugins::P_TYPE_LUA), "-1", key, icon );
-		}
 		case SNeutrinoSettings::ITEM_REMOTE:
 		{
 			keyhelper.get(&key,&icon,feat_key[g_settings.personalize[SNeutrinoSettings::P_FEAT_KEY_RC_LOCK]].key); //CRCInput::RC_nokey);
@@ -410,48 +384,11 @@ bool CUserMenu::showUserMenu(neutrino_msg_t msg)
 			menu_item->setHint(NEUTRINO_ICON_HINT_DBOXINFO, LOCALE_MENU_HINT_DBOXINFO);
 			break;
 		}
-#if !HAVE_SPARK_HARDWARE
-		case SNeutrinoSettings::ITEM_CAM:
-		{
-			keyhelper.get(&key,&icon);
-			menu_item = new CMenuForwarder(LOCALE_CI_SETTINGS, true, NULL, g_CamHandler, NULL, key, icon);
-			// FIXME menu_item->setHint("", NONEXISTANT_LOCALE);
-			break;
-		}
-#endif
 		case SNeutrinoSettings::ITEM_CLOCK:
 		{
 			keyhelper.get(&key,&icon); 
 			menu_item = new CMenuForwarder(!g_settings.mode_clock ? LOCALE_CLOCK_SWITCH_ON:LOCALE_CLOCK_SWITCH_OFF, true, NULL, neutrino, "clock_switch", key, icon);
 			menu_item->setHint("", LOCALE_MENU_HINT_CLOCK_MODE);
-			break;
-		}
-		case SNeutrinoSettings::ITEM_GAMES:
-		{
-			keyhelper.get(&key,&icon);
-			menu_item = new CMenuDForwarder(LOCALE_MAINMENU_GAMES, g_PluginList->hasPlugin(CPlugins::P_TYPE_GAME), NULL, new CPluginList(LOCALE_MAINMENU_GAMES,CPlugins::P_TYPE_GAME), "-1", key, icon );
-			menu_item->setHint(NEUTRINO_ICON_HINT_GAMES, LOCALE_MENU_HINT_GAMES);
-			break;
-		}
-#if HAVE_SPARK_HARDWARE || HAVE_DUCKBOX_HARDWARE
-		case SNeutrinoSettings::ITEM_THREE_D_MODE:
-		{
-			keyhelper.get(&key,&icon);
-			menu_item = new CMenuForwarder(LOCALE_THREE_D_SETTINGS, true, NULL, neutrino, "3dmode", key, icon);
-			menu_item->setHint("", LOCALE_MENU_HINT_VIDEO_THREE_D);
-			break;
-		}
-#endif
-		case SNeutrinoSettings::ITEM_RASS:
-		{
-			if (!(neutrino->getMode() == CNeutrinoApp::mode_radio && g_Radiotext && g_Radiotext->haveRASS()))
-				continue;
-		}
-		case SNeutrinoSettings::ITEM_SCRIPTS:
-		{
-			keyhelper.get(&key,&icon);
-			menu_item = new CMenuDForwarder(LOCALE_MAINMENU_SCRIPTS, g_PluginList->hasPlugin(CPlugins::P_TYPE_SCRIPT), NULL, new CPluginList(LOCALE_MAINMENU_SCRIPTS,CPlugins::P_TYPE_SCRIPT), "-1", key, icon );
-			menu_item->setHint(NEUTRINO_ICON_HINT_SCRIPTS, LOCALE_MENU_HINT_SCRIPTS);
 			break;
 		}
 		//NI
@@ -573,6 +510,40 @@ bool CUserMenu::showUserMenu(neutrino_msg_t msg)
 			// FIXME menu_item->setHint("", NONEXISTANT_LOCALE);
 			break;
 		}
+		case SNeutrinoSettings::ITEM_TUNER_RESTART:
+		{
+			keyhelper.get(&key,&icon);
+			menu_item = new CMenuForwarder(LOCALE_SERVICEMENU_RESTART_TUNER, true, NULL, neutrino, "restarttuner", key, icon);
+			menu_item->setHint(NEUTRINO_ICON_HINT_RELOAD_CHANNELS, LOCALE_MENU_HINT_RESTART_TUNER);
+			break;
+		}
+#if HAVE_SPARK_HARDWARE || HAVE_DUCKBOX_HARDWARE
+		case SNeutrinoSettings::ITEM_THREE_D_MODE:
+		{
+			keyhelper.get(&key,&icon);
+			menu_item = new CMenuForwarder(LOCALE_THREE_D_SETTINGS, true, NULL, neutrino, "3dmode", key, icon);
+			menu_item->setHint("", LOCALE_MENU_HINT_VIDEO_THREE_D);
+			break;
+		}
+#endif
+		case SNeutrinoSettings::ITEM_RASS:
+		{
+			if (!(neutrino->getMode() == CNeutrinoApp::mode_radio && g_Radiotext && g_Radiotext->haveRASS()))
+				continue;
+			keyhelper.get(&key,&icon);
+			menu_item = new CMenuForwarder(LOCALE_RASS_HEAD, true, NULL, neutrino, "rass", key, icon);
+			menu_item->setHint(NEUTRINO_ICON_HINT_RASS, LOCALE_MENU_HINT_RASS);
+			break;
+		}
+#if !HAVE_SPARK_HARDWARE
+		case SNeutrinoSettings::ITEM_CAM:
+		{
+			keyhelper.get(&key,&icon);
+			menu_item = new CMenuForwarder(LOCALE_CI_SETTINGS, true, NULL, g_CamHandler, NULL, key, icon);
+			// FIXME menu_item->setHint("", NONEXISTANT_LOCALE);
+			break;
+		}
+#endif
 		case -1: // plugin
 		{
 			int number_of_plugins = g_PluginList->getNumberOfPlugins();

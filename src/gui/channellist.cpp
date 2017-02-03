@@ -1977,6 +1977,7 @@ void CChannelList::paintItem(int pos, const bool firstpaint)
 		const char *hd_icon = NULL;
 		if(chan->isHD() && g_settings.channellist_hdicon)
 			hd_icon = NEUTRINO_ICON_RESOLUTION_HD;
+
 		//set webtv icon
 		const char *webtv_icon = NULL;
 		if (!chan->getUrl().empty())
@@ -1992,6 +1993,7 @@ void CChannelList::paintItem(int pos, const bool firstpaint)
 		int icon_h = 0;
 		int offset_right = OFFSET_INNER_MID;
 		int icon_x_right = x + width - 15 - offset_right;
+
 		if (hd_icon)
 		{
 			frameBuffer->getIconSize(hd_icon, &icon_w, &icon_h);

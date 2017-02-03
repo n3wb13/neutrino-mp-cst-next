@@ -374,7 +374,6 @@ class CZapitClient:public CBasicClient
 
 	/* get dvb transmission type */
 	delivery_system_t getDeliverySystem(void);
-	void lockRc(const bool mute);
 
 	/* Lock remote control */
 	void lockRc(const bool mute);

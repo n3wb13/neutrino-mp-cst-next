@@ -632,6 +632,12 @@ void CStreamInfo2::paint_techinfo(int xpos, int ypos)
 	snprintf(buf, sizeof(buf), "%s:", g_Locale->getText (LOCALE_STREAMINFO_AUDIOTYPE));
 	g_Font[font_info]->RenderString (xpos, ypos, box_width, buf, COL_MENUCONTENT_TEXT);
 
+	snprintf(buf, sizeof(buf), "%s", mp ? mp->getAPIDDesc(mp->getAPID()).c_str() : g_RemoteControl->current_PIDs.APIDs[g_RemoteControl->current_PIDs.PIDs.selected_apid].desc);
+
+#if 0
+	snprintf(buf, sizeof(buf), "%s:", g_Locale->getText (LOCALE_STREAMINFO_AUDIOTYPE));
+	g_Font[font_info]->RenderString (xpos, ypos, box_width, buf, COL_MENUCONTENT_TEXT);
+
 	int type, layer, freq, mode, lbitrate;
 	/*
 	   audioDecoder->getAudioInfo() seems broken in libcoolstream2.
@@ -699,6 +705,7 @@ void CStreamInfo2::paint_techinfo(int xpos, int ypos)
 			 g_Locale->getText(LOCALE_STREAMINFO_AUDIOTYPE_UNKNOWN),
 			 freq);
 	}
+#endif
 	g_Font[font_info]->RenderString (xpos+spaceoffset, ypos, box_width2, buf, COL_MENUCONTENT_TEXT);
 
 	if (mp) {

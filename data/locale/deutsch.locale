@@ -2100,7 +2100,7 @@ movieplayer.plugin Movieplayer-Plugin
 movieplayer.starting Wiedergabe starten ...
 movieplayer.titles Titel
 movieplayer.toomanybookmarks Sie haben bereits zu viele Lesezeichen angelegt.\nEs muß erst ein anderes gelöscht werden.
-movieplayer.tsplayback TS Abspielen
+movieplayer.tsplayback Abspielen
 movieplayer.ytplayback YouTube-Feed Wiedergabe
 mpkey.audio Tonspuren
 mpkey.bookmark Markierungen

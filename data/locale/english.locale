@@ -2100,7 +2100,7 @@ movieplayer.plugin Movieplayer plugin
 movieplayer.starting Starting playback ...
 movieplayer.titles Titles
 movieplayer.toomanybookmarks There are too many bookmarks.\nYou need to delete one of them first.
-movieplayer.tsplayback Play TS
+movieplayer.tsplayback Play
 movieplayer.ytplayback YouTube videoplayer
 mpkey.audio Audiotracks
 mpkey.bookmark Bookmarks
